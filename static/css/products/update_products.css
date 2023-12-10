@@ -1,0 +1,26 @@
+.addproduct_title{
+    font-size: medium;
+    margin-bottom: 5px;
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
+
+.updateproduct_label {
+    float: left;
+    color: #333; 
+    font-size: 13px; 
+    font-weight: bold;
+}
+
+.updateproduct_boton{
+    background: rgb(244, 244, 244);
+    width: 80%;
+    border-radius: 15px;
+    padding: 10px;
+    font-family: poppins;
+    border: 1px solid rgb(198, 198, 198);
+    text-align: center;
+    margin: 10px auto
+}

@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+  <title>New sale</title>
+  <link rel="stylesheet" href="{% static 'css/sales_css/new_sale.css' %}">
+  
+{% endblock head %}
+
+{% block content %}
+<!-- Nav inferior con campo de busqueda y opciones -->
+<nav class="navbar fixed-bottom navbar-expand-sm nav_inferior">
+  <div class="container-fluid">
+    <div class="hstack gap-3">
+      <input class="form-control me-2 me-auto inputproducts" type="text" placeholder="Escanea tus productos..."
+      aria-label="Escanea tus productos..." autocomplete='off' autofocus>    
+      <button type="button" class="btn btn-success" id="sendproduct"><i class="bi bi-arrow-right"></i></button>
+    </div>
+    <div class="d-flex flex-sm-column justify-content-sm-start">
+      <button type="button" class="btn btn-outline-success mt-3 mt-sm-0" data-bs-toggle="modal" data-bs-target="#productexplorer" id="modal_searchproducts">
+        <i class="bi bi-search"></i>
+        Busqueda de productos
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Modal search products -->
+<div class="modal fade" id="productexplorer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header">
+        <input class="form-control me-2 me-auto searchproducts" type="search" placeholder="Search item here..."
+        aria-label="Search item here..." autocomplete='off'>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal_result">
+        <ul id="list-search-items">
+          <h5>Busca algún producto</h5>        
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para preguntar la cantidad -->
+<div class="modal fade" id="quantityProduct" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Ingrese la cantidad</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="me-2"><span id="product-name"></span></p>
+        <input class="form-control me-auto inputcantidad" type="text" placeholder="Ingrese la cantidad..."
+        aria-label="Ingrese la cantidad..." autocomplete='off'
+        inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success sendcantidad">Agregar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Vista del carrito -->
+<div class="row base_form_sale">
+  <div id="cart-total">
+    <h3>Total: $ <strong>0</strong>
+      <button type="button" class="btn btn-outline-success float-end" disabled>Siguiente</button>
+    </h3>
+  </div>
+  <div class="car">
+    <div>
+      <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-success">Productos en el carrito</span>
+        <span class="badge bg-success rounded-pill">0</span>
+      </h4>
+      <ul class="list-group mb-3" id="cart-items">
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal información final -->
+<div class="modal fade" id="modalclient" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-bottom-0">
+        <h5 class="mb-0">Ingrese la siguiente información</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="form-floating mb-3 input_customer">
+        <input type="text" name="Customer" maxlength="150" class="form-control" id="client" placeholder="Customer" autocomplete="off" list="sugerencias" required>
+        <label for="floatingInput">Nombre o identificación del cliente: </label>
+        <datalist id="sugerencias"></datalist>
+      </div>
+      <div class="form-floating mb-3 input_pay">
+        <input type="number" name="pay" class="form-control" id="pay" placeholder="Pago" required>
+        <label for="floatingInput">Pago con: </label>
+      </div>
+      <div class="modal-footer flex-nowrap p-0">
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" id="registrar_venta">Registrar venta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal de error -->
+<div class="modal fade" tabindex="-1" role="dialog" id="errorModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-bottom-0">
+        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <div class="modal-body">
+          <p id="mensaje_error">Ocurrió un error. Por favor, inténtalo de nuevo más tarde.</p>
+        </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+
+{% block scriptjs %}
+ <script src="{% static 'js\sales_js\new_sale.js' %}"></script>
+{% endblock scriptjs %}
+  

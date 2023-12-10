@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="icon" href="{% static 'img/icons8-tienda-32.png' %}">
+  <link rel="stylesheet" href="{% static 'css/includes/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/users_css/login_user.css' %}">
+</head>
+<body>
+  <img class="fondo" src="{% static 'img/Fondo_inicio.jpg' %}" alt="">
+  <div class="sesion">
+    <a href="{% url 'admin_app:create_user' %}">
+      <img class="icono_gramon" src="{% static 'img\logo-gramon.png' %}" alt="GRAMON">
+    </a>  
+    <main class="form-signin w-100 m-auto text-center">
+      {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+          <div class="alert alert-danger">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <h3>¡Bienvenido!</h3>
+        <div class="caja">
+          {{ form.username }}
+        </div>
+        <div class="caja">
+          {{ form.password }}
+        </div>
+        <button type="submit" class="btn btn-success btn_ingresar">Ingresar</button>
+      </form>
+    </main>
+  </div>
+</body> 
+</html>

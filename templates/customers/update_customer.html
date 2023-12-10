@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <title>{{user.first_name}} {{user.last_name}}</title>
+{% endblock head %}
+
+
+{% block content %}
+    <div style="padding-bottom: 40px;">
+        <div class="py-5 text-center">
+            <h2>Actualizar customer</h2>
+        </div>
+        <div class="container">
+            <div class="div-form p-4 rounded">
+                <form method="post" class="row g-3 form d-flex justify-content-center">
+                    {% csrf_token %}
+                    <div class="col-md-6 mx-auto">
+                        <fieldset class="col-md-12">
+                            {% for field in form %}                                               
+                                <div class="form-floating mb-3">
+                                    {{ field }}
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {% for error in field.errors %}
+                                        <div class="invalid-feedback" style="text-align: left;">
+                                            <i class='bx bx-x bx-tada' ></i>
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </fieldset>
+                    </div>
+                    <div class="col-12 text-center">
+                        <button class="btn btn-outline-success" type="submit">Actualizar usuario</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+
+{% block scriptjs %}
+    <script src="{% static 'js/form-validation.js' %}"></script>
+{% endblock scriptjs %}
+    

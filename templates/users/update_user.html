@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <title>{{user.first_name}} {{user.last_name}}</title>
+{% endblock head %}
+
+
+{% block content %}
+    <div style="padding-bottom: 40px;">
+        <div class="py-5 text-center">
+            <h2>Actualizar usuario</h2>
+        </div>
+        <div class="container">
+            <div class="div-form p-4 rounded">
+                <form method="post" class="row g-3 form">
+                    {% csrf_token %}
+                    <div class="col-md-6 mx-auto">
+                        <fieldset class="col-md-12">
+                            {% for field in form %}
+                                {% if field.name == 'is_superuser' %}
+                                    <div class="form-check form-check-inline mb-3">
+                                        {{ field }}
+                                        <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    </div>
+                                {% else %}
+                                    <div class="form-floating mb-3">
+                                        {{ field }}
+                                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                        {% for error in field.errors %}
+                                            <div class="invalid-feedback" style="text-align: left;">
+                                                <i class='bx bx-x bx-tada' ></i>
+                                                {{ error }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </fieldset>
+                    </div>
+                    <div class="col-12 text-center">
+                        <button class="btn btn-succes" type="submit">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        
+            <footer class="my-5 pt-5 text-muted text-center text-small">
+                <p class="mb-1">&copy; 2022 GraMon</p>
+                <ul class="list-inline">
+                    <li class="list-inline-item"><a href="#">Privacy</a></li>
+                    <li class="list-inline-item"><a href="#">Terms</a></li>
+                    <li class="list-inline-item"><a href="#">Support</a></li>
+                </ul>
+            </footer>
+    </div>
+{% endblock content %}
+
+
+{% block scriptjs %}
+    <script src="{% static 'js/form-validation.js' %}"></script>
+{% endblock scriptjs %}
+    

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <title>Historial de ventas</title>
+    <link rel="stylesheet" href="{% static 'css/sales_css/list_sale.css' %}">
+{% endblock head %}
+
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center" style="width: 100%;">
+        <a style="width: 150px; text-align: center; margin-top: 20px; margin-left: 15px;" class="btn btn-outline-success" role="button" href="{% url 'new_sale' %}">
+            Nueva venta
+        </a>
+        <div class="d-flex" style="padding: 20px 20px; width: 250px;">
+            <input class="form-control me-2" type="search" placeholder="Buscar..." aria-label="Search" name="search_sale" id="search_sale">
+            <button class="btn btn-outline-success" id="botom_search_sale">Buscar</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover" style="text-align: center;">
+            <thead>
+                <tr>
+                    <th scope="col">N° factura</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Vendedor</th>
+                    <th scope="col">Valor de la venta</th>
+                    <th scope="col">Fecha de venta</th>
+                    <th scope="colgroup">Accion</th>
+                </tr>
+            </thead>
+            <tbody class="showResults">
+                {% for venta in history%}
+                <tr>
+                    <th scope="row">#{{venta.id}}</th>
+                    <td>{{venta.client}}</td>
+                    <td>{{venta.user}}</td>
+                    <td>${{venta.valor_final}}</td>
+                    <td>{{venta.created_at}}</td>
+                    <td style="text-align: center;">
+                        <i class="bi bi-eye visualizer" data-id="{{venta.id}}"></i>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    {% if is_paginated %}
+    <div id="pagination-container">
+        <nav aria-label="...">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{page_obj.previous_page_number}} "tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                {% endif %}
+                {% for pagina in paginator.page_range %}
+                    <li class="page-item"><a class="page-link" href="?page={{pagina}}">{{ pagina }}</a></li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{page_obj.next_page_number}}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+{% endblock content %}
+
+
+{% block scriptjs %}
+    <script src="{% static 'js/sales_js/list_sale.js' %}"></script>
+{% endblock scriptjs %}
+    

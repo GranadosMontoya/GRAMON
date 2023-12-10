@@ -1,0 +1,28 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Eliminar usuario</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form class="cell" method="post" action="{% url 'customer_app:delete_customer' c.id%}">{% csrf_token %}
+              <div class="callout secondary">
+                <div class="callout secondary">
+                  <div class="card text-bg-danger p-3" style="max-width: 100%;">
+                    <div class="card-header">{{ c.name }} {{ c.last_name }}</div>
+                    <div class="card-body">
+                      <p>Confirma que quieres eliminar al cliente <strong>{{ c.name }} {{ c.last_name }}</strong> de maner definitiva</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Al presionar este botón no se podrán realizar más acciones sobre este usuario y tampoco se podrá acceder a su información de nuevo">
+                  Confirmar
+                </button>
+              </div>
+            </form>
+          </div>          
+    </div>
+</div>        
