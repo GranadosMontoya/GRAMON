@@ -28,4 +28,6 @@ urlpatterns = [
     re_path('',include('apps.customers_app.api.router')),
     re_path('',include('apps.products_app.api.router')),
     re_path('',include('apps.sales_app.api.router')),
+    re_path('',include('apps.dashboard_products.urls')),
+    re_path('',include('apps.dashboard_products.api.router')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 

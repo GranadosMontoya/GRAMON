@@ -54,6 +54,8 @@ $('.modal_create_product').click(function () {
                     if (fieldsWithErrors.includes("code")) {
                       alert("Error en el campo 'codigo' probablemente el código ya este en uso o el tipo de dato no es valido");
                       $("#code").val('')
+                      $('.addproduct_boton').prop('disabled', false);
+                      $('.addproduct_boton').html('Crear Producto');
                     } else {
                       alert("Ha ocurrido un error en algunos campos")
                       console.error("Error en los siguientes campos:", fieldsWithErrors);

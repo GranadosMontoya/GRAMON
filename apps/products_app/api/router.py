@@ -13,5 +13,4 @@ urlpatterns = [
     re_path('update/product/', ModalUpdateProduct),
     re_path('info/product/',ModalInfoProduct),
     re_path('delete/product',ModalDeleteProduct),
-    re_path('verificar_codigo/',verificar_codigo),
 ]

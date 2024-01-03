@@ -26,6 +26,7 @@ class SalesView(APIView):
         if serializer.is_valid():
             sale = serializer.save()
             return Response({'factura': sale.id})
+        print(serializer.errors)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
     def get(self, request):

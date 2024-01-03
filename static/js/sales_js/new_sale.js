@@ -200,6 +200,8 @@ function sendsale(client, products, final_value, pay) {
       error: function (error) {
         document.getElementById('mensaje_error').innerHTML = 'Ha ocurrido un error al intentar registrar la venta';
         $('#errorModal').modal('show');
+        $('#client').val(emptyHtml);
+        $('#pay').val(emptyHtml);
         console.log(error)
       }
   });
@@ -215,7 +217,7 @@ function imprimirFactura(ventaId) {
 }
 
 $('.inputproducts').keypress(function(event) {
-  if (event.which === 13) { 
+  if (event.which === 13) {
     $('#sendproduct').click();
   }
 });
@@ -247,8 +249,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
 
-  $('.searchproducts').on('input', function () {
-    const valor = $(this).val();
+  $(document).on('click', '#searchproducts_button', function() {
+    const valor = $('.searchproducts').val();
     const lista = $('#list-search-items');
     lista.empty();
     const spinnerContainer = $('<div id="spinner-container" class="spinner-container"><div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div></div>');

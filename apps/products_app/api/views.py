@@ -89,12 +89,3 @@ def ModalUpdateProduct(request):
     else:
         print('Ocurrio un errror al obtener al información')
     return render(request, 'products/Form_update_product.html', context)
-
-@api_view(['GET'])
-def verificar_codigo(request):
-    codigo = request.GET.get("codigo")
-    exists = Products.objects.filter(code=codigo).exists()
-    if exists:
-        return Response({'exists': True})
-    else:
-        return Response({'exists': False})

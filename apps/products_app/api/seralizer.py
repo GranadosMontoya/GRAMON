@@ -5,9 +5,6 @@ from rest_framework import serializers
 
 #Import local
 from..models import Products
-from ..models import Products
-
-
 
 class ProductsSerializer(ModelSerializer):
     """products serializer"""

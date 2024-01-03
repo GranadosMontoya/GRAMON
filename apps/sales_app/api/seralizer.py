@@ -3,6 +3,7 @@ from rest_framework import serializers
 from ..models import Sales,SaleProduct
 from django.utils.timezone import localtime
 from ...products_app.models import Products
+from ...dashboard_products.models import Statistics_products
 
 
 class SalesProductSerializer(serializers.ModelSerializer):
@@ -26,10 +27,25 @@ class SalesSerializer(serializers.ModelSerializer):
             quantity = product_data['quantity']
             unit_price = product_data['unit_price']
             full_value = product_data['full_value']
+            ############### Modificar la cantidad del producto #################################
             SaleProduct.objects.create(code=code, sale=sale, quantity=quantity, unit_price=unit_price, full_value=full_value)
             product = Products.objects.get(code=code)
             product.amount -= quantity
+            valor_inicial = product.entry_price
             product.save()
+            ################ Modificar la estadistica del producto ################################
+            product_statistics = Statistics_products.objects.get(code_statistics=code)
+            product_statistics.quantity_statistics +=quantity
+            product_statistics.sold_value +=full_value
+
+            valor_inicial_producto = valor_inicial * quantity
+            print('"!', valor_inicial_producto)
+
+            diferencia = full_value - valor_inicial_producto
+            print('d', diferencia)
+
+            product_statistics.revenue += diferencia
+            product_statistics.save()
         return sale
 
 
