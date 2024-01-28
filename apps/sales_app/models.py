@@ -15,8 +15,8 @@ class Sales(models.Model):
     products = models.ManyToManyField(Products,through='SaleProduct')
     created_at = models.DateTimeField(auto_now_add=True)
     valor_final = models.DecimalField(max_digits=99, decimal_places=2)
-    pay = models.DecimalField(max_digits=99, decimal_places=2)
-    change = models.DecimalField(max_digits=99, decimal_places=2,default=0)
+    pay = models.DecimalField(max_digits=99, decimal_places=0)
+    change = models.DecimalField(max_digits=99, decimal_places=0,default=0)
 
     def __str__(self):
         return 'N° factura: ' + str(self.id)
