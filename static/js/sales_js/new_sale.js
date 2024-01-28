@@ -3,65 +3,109 @@ var nombres_productos = [];
 var liId = [];
 let producto;
 let valor_final = 0;
+var spent = [];
+var spent_alert = [];
 
-function additem(item, cantidad){
-  var result = false
-  // Asignar el valor predeterminado de 1 si no se proporciona un valor para cantidad
+function additem(item, cantidad) {
+  var result = false;
   var cantidadItem = cantidad || 1;
-  for (let i = 0; i < venta.length; i++) {
-    if (venta[i].code == item.code) { //El producto existe en el carrito
+
+  for (let i = 0; i < venta.length; i++) {//El producto ya existe
+    if (venta[i].code == item.code) {
       venta[i].quantity += cantidadItem;
-      venta[i].full_value = item.exit_price * venta[i].quantity
+      venta[i].full_value = item.exit_price * venta[i].quantity;
       result = true;
-      document.getElementById('cant'+venta[i].code).innerHTML = 'Cantidad: ' + venta[i].quantity;
-      document.getElementById('value'+venta[i].code).innerHTML = 'Valor: $' + venta[i].full_value;
+      document.getElementById('cant' + venta[i].code).innerHTML = 'Cantidad: ' + venta[i].quantity;
+      document.getElementById('value' + venta[i].code).innerHTML = 'Valor: $' + venta[i].full_value;
+
+      if (item.amount < venta[i].quantity) {
+        var validation_spent = spent.includes(item.code);
+        if (!validation_spent) {
+          spent.push(item.code);
+        }
+      }
       break;
     }
   }
+
   if (!result) { // El producto no existe en la venta, agrega uno nuevo
     var producto = {
       code: parseInt(item.code),
       quantity: cantidadItem,
       unit_price: parseFloat(item.exit_price),
-      full_value: parseFloat(cantidadItem * item.exit_price) 
+      full_value: parseFloat(cantidadItem * item.exit_price)
     };
+
     var nombres_productos_item = {
       nombre: item.name
     };
-    nombres_productos.push(nombres_productos_item)
+    nombres_productos.push(nombres_productos_item);
     venta.push(producto);
+
+
+    if (item.amount <= 0) {
+      var validation_spent = spent.includes(item.code);
+      if (!validation_spent) {
+        spent.push(item.code);
+      }
+    }
+    
+
+    // Actualiza elementos HTML para reflejar los cambios
     $('#cart-items').html('');
     for (let i = 0; i < venta.length; i++) {
       const productoId = parseInt(venta[i].code);
       const validation_bonus = liId.includes(productoId);
+      const validation_spent = spent_alert.includes(item.code);
+
+      // Construye elementos HTML para cada producto en el carrito
       itemHtml = '<li class="list-group-item d-flex justify-content-between lh-sm' + (validation_bonus ? ' clicked' : '') + '" id="Li' + productoId + '" style="margin-left: 15px; margin-bottom: 5px">' +
-                    '<div>'+
-                      '<h6 class="my-0">' + nombres_productos[i].nombre + '</h6>'+
-                          '<div class="text-group">'+
-                              '<small class="text-muted" id="cant'+venta[i].code+'">Cantidad: ' + venta[i].quantity+'</span>'+'</small>'+
-                              '<small class="text-muted">Precio unitario: $' + venta[i].unit_price+'</span>'+'</small>'+
-                            '</div>'+
-                      '</div>' +
-                      '<span class="text-success full-value" id="value'+venta[i].code+'">Valor: $' + venta[i].full_value + '</span>' +
-                      '<div class="icon-container">'+
-                        '<i class="bi bi-patch-check icon_sale bonus-item'+ (validation_bonus ? ' active_bonus' : '') +'" data-producto-idbonus='+venta[i].code+' disabled></i>'+
-                        '<i class="bi bi-dash-circle icon_sale menos-item" data-producto-idrest='+venta[i].code+'></i>'+
-                        '<i class="bi bi-trash icon_sale remove-item" data-producto-idremove='+venta[i].code+'></i>'+
-                      '</div>'+
-                    '</li>';
+        '<div>' +
+          '<h6 class="my-0">' + nombres_productos[i].nombre + '</h6>' +
+          '<div class="text-group">' +
+            '<small class="text-muted" id="cant' + venta[i].code + '">'+
+                '</span> Cantidad: ' + venta[i].quantity + '</span>' +
+            '</small>' +
+            '<small class="text-muted">Precio unitario: $' + venta[i].unit_price + '</span>' + '</small>' +
+          '</div>' +
+        '</div>' +
+        '<div id="alert_spent'+item.code+'" class="icon-container">'+
+          '<i class="bi bi-exclamation-triangle icon_sale spent-icon'+ (validation_spent ? ' active_bonus' : '')+'" id="alert_'+item.code+'"></i>'+
+        '</div>'+
+        '<span class="text-success full-value" id="value' + venta[i].code + '">Valor: $' + venta[i].full_value + '</span>' +
+        '<div class="icon-container" id=' + 'icon-container' + productoId + '>' +
+          '<i class="bi bi-patch-check icon_sale bonus-item' + (validation_bonus ? ' active_bonus' : '') + '" data-producto-idbonus=' + venta[i].code + '></i>' +
+          '<i class="bi bi-dash-circle icon_sale menos-item" data-producto-idrest=' + venta[i].code + '></i>' +
+          '<i class="bi bi-trash icon_sale remove-item" data-producto-idremove=' + venta[i].code + '></i>' +
+        '</div>' +
+        '</li>';
       $('#cart-items').prepend(itemHtml);
     }
+  }
+
+  if (spent.includes(item.code)) {
+    alert('oe')
+    $('#alert_'+item.code).addClass('active_bonus');
+  }else{
+    alert('chao')
   }
   // Calcula el precio total y lo muestra
   valor_final = 0;
   for (let i = 0; i < venta.length; i++) {
     valor_final += parseFloat(venta[i].full_value);
   }
-  $('#cart-total').html('<h3 id="valor_final">Total: $<strong>' + valor_final + '</strong>'+ 
-  '<button type="button" class="btn btn-success float-end" data-bs-toggle="modal" id="Next" data-bs-target="#modalclient">Siguiente</button></h3>');
-  // Actualiza el contador del venta
+
+  // Actualiza el contador del carrito
   const count = $('#cart-items li').length;
   $('.badge').text(count);
+
+  // Actualiza el total y aplica un estilo si es necesario
+  $('#cart-total').html('<h3 id="valor_final">Total: $<strong class="' + (valor_final <= 0 ? 'producto-agotado' : '') + '">' + valor_final + '</strong>' +
+    '<button type="button" class="btn btn-success float-end" data-bs-toggle="modal" id="Next" data-bs-target="#modalclient">Siguiente</button></h3>');
+}
+
+function pre_venta(item, cantidad) {
+  
 }
 
 function removeItem(productoId, element) {
@@ -240,11 +284,11 @@ document.addEventListener("DOMContentLoaded", function() {
           }
         }
         if (existe) { // El producto existe en la base de datos
+          $('.inputproducts').val(''); // vaciar el campo de búsqueda
           additem(item)
         } else{
           alert('el producto no existe')
         }
-        $('.inputproducts').val(''); // vaciar el campo de búsqueda
       }
     });
   });

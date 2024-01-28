@@ -60,6 +60,12 @@
     transform: scale(1.5);
 }
 
+/* .spent-icon{
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+} */
+
 .bonus-item{
     pointer-events: none;
     opacity: 0.6;
@@ -207,3 +213,10 @@ li.clicked {
 #impimir_factura{
     margin-top: 10px;
 }
+
+.producto-agotado {
+    background-color: #ffcccc; /* Fondo rojo claro */
+    border: 1px solid #ff6666; /* Borde rojo más oscuro */
+    color: #cc0000; /* Texto rojo oscuro */
+}
+  

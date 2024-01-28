@@ -22,31 +22,36 @@ class SalesSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         products_data = validated_data.pop('products')
         sale = Sales.objects.create(**validated_data)
+
         for product_data in products_data:
             code = product_data['code']
             quantity = product_data['quantity']
             unit_price = product_data['unit_price']
             full_value = product_data['full_value']
-            ############### Modificar la cantidad del producto #################################
+
+            # Agrega esta línea para imprimir información de depuración
+            print(f"Debug: Antes de modificar la cantidad del producto - Código: {code}, Cantidad: {quantity}")
+
+            # Modificar la cantidad del producto
             SaleProduct.objects.create(code=code, sale=sale, quantity=quantity, unit_price=unit_price, full_value=full_value)
             product = Products.objects.get(code=code)
             product.amount -= quantity
             valor_inicial = product.entry_price
             product.save()
-            ################ Modificar la estadistica del producto ################################
+
+            # Agrega otra línea para imprimir información de depuración
+            print(f"Debug: Antes de modificar la estadística del producto - Código: {code}, Cantidad: {quantity}")
+
+            # Modificar la estadística del producto
             product_statistics = Statistics_products.objects.get(code_statistics=code)
-            product_statistics.quantity_statistics +=quantity
-            product_statistics.sold_value +=full_value
-
+            product_statistics.quantity_statistics += quantity
+            product_statistics.sold_value += full_value
             valor_inicial_producto = valor_inicial * quantity
-            print('"!', valor_inicial_producto)
-
             diferencia = full_value - valor_inicial_producto
-            print('d', diferencia)
-
             product_statistics.revenue += diferencia
             product_statistics.save()
-        return sale
+
+            return sale
 
 
 class SalesHistorySales(serializers.ModelSerializer):
