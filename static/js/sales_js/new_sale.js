@@ -4,7 +4,47 @@ var liId = [];
 let producto;
 let valor_final = 0;
 var spent = [];
-var spent_alert = [];
+
+function limpiarLocalStorage() {
+  return new Promise((resolve) => {
+    localStorage.removeItem('carrito');
+    localStorage.removeItem('nombres_productos');
+    localStorage.removeItem('liId');
+    localStorage.removeItem('spent');
+    localStorage.removeItem('spent_alert');
+    resolve();
+  });
+}
+
+function guardarCarritoEnLocalStorage() {
+  localStorage.setItem('carrito', JSON.stringify(venta));
+  localStorage.setItem('nombres_productos', JSON.stringify(nombres_productos));
+  localStorage.setItem('liId', JSON.stringify(liId));
+  localStorage.setItem('spent', JSON.stringify(spent));
+  localStorage.setItem('spent_alert', JSON.stringify(spent_alert));
+}
+
+function pre_venta(item, cantidad) {
+  var cantidadItem = cantidad || 1;
+  var codigo = item.code
+  $.ajax({
+    url: '/pre_venta/product/',
+    type: 'PUT',
+    dataType: 'json',
+    headers: {
+        'X-CSRFToken': csrfToken,
+        'Content-Type': 'application/json'
+    },
+    data: JSON.stringify({
+        "code": codigo,
+        "amount":cantidadItem,
+    }),
+    traditional: true,
+    success: function(response) {
+      alert(response.mensaje)
+    }
+  });
+}
 
 function additem(item, cantidad) {
   var result = false;
@@ -12,21 +52,41 @@ function additem(item, cantidad) {
 
   for (let i = 0; i < venta.length; i++) {//El producto ya existe
     if (venta[i].code == item.code) {
+      alert('sebas')
       venta[i].quantity += cantidadItem;
       venta[i].full_value = item.exit_price * venta[i].quantity;
       result = true;
       document.getElementById('cant' + venta[i].code).innerHTML = 'Cantidad: ' + venta[i].quantity;
       document.getElementById('value' + venta[i].code).innerHTML = 'Valor: $' + venta[i].full_value;
-
-      if (item.amount < venta[i].quantity) {
-        var validation_spent = spent.includes(item.code);
-        if (!validation_spent) {
+      if (item.amount <= 0) {
+        alert('mmm')
+        var listado = spent.includes(item.code);
+        if (!listado) {
           spent.push(item.code);
+          spent = spent.map(code => parseInt(code));
+          alert('aaaaaaaaaa')
+          document.getElementById('alert_spent'+venta[i].code).innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-diamond-fill alert_true_spent" viewBox="0 0 16 16">' +
+          '<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/></svg>'
+        }
+      }
+      if (item.amount > 0) {
+        var listado = spent.includes(parseInt(item.code));
+        alert(listado)
+        if (listado) {
+          var index = spent.indexOf(parseInt(item.code));
+          if (index !== -1) {
+            spent.splice(index, 1);
+            alert('Elemento eliminado de spent');
+          }
+        } else {
+          alert('El elemento no está en spent');
         }
       }
       break;
     }
   }
+
+  
 
   if (!result) { // El producto no existe en la venta, agrega uno nuevo
     var producto = {
@@ -44,9 +104,10 @@ function additem(item, cantidad) {
 
 
     if (item.amount <= 0) {
-      var validation_spent = spent.includes(item.code);
-      if (!validation_spent) {
+      var listado = spent.includes(item.code);
+      if (!listado) {
         spent.push(item.code);
+        spent = spent.map(code => parseInt(code));
       }
     }
     
@@ -56,39 +117,34 @@ function additem(item, cantidad) {
     for (let i = 0; i < venta.length; i++) {
       const productoId = parseInt(venta[i].code);
       const validation_bonus = liId.includes(productoId);
-      const validation_spent = spent_alert.includes(item.code);
-
+      const validation_spent = spent.includes(venta[i].code);
       // Construye elementos HTML para cada producto en el carrito
-      itemHtml = '<li class="list-group-item d-flex justify-content-between lh-sm' + (validation_bonus ? ' clicked' : '') + '" id="Li' + productoId + '" style="margin-left: 15px; margin-bottom: 5px">' +
-        '<div>' +
-          '<h6 class="my-0">' + nombres_productos[i].nombre + '</h6>' +
-          '<div class="text-group">' +
-            '<small class="text-muted" id="cant' + venta[i].code + '">'+
-                '</span> Cantidad: ' + venta[i].quantity + '</span>' +
-            '</small>' +
-            '<small class="text-muted">Precio unitario: $' + venta[i].unit_price + '</span>' + '</small>' +
-          '</div>' +
-        '</div>' +
-        '<div id="alert_spent'+item.code+'" class="icon-container">'+
-          '<i class="bi bi-exclamation-triangle icon_sale spent-icon'+ (validation_spent ? ' active_bonus' : '')+'" id="alert_'+item.code+'"></i>'+
-        '</div>'+
-        '<span class="text-success full-value" id="value' + venta[i].code + '">Valor: $' + venta[i].full_value + '</span>' +
-        '<div class="icon-container" id=' + 'icon-container' + productoId + '>' +
-          '<i class="bi bi-patch-check icon_sale bonus-item' + (validation_bonus ? ' active_bonus' : '') + '" data-producto-idbonus=' + venta[i].code + '></i>' +
-          '<i class="bi bi-dash-circle icon_sale menos-item" data-producto-idrest=' + venta[i].code + '></i>' +
-          '<i class="bi bi-trash icon_sale remove-item" data-producto-idremove=' + venta[i].code + '></i>' +
-        '</div>' +
-        '</li>';
+      itemHtml = '<li class="list-group-item d-flex justify-content-between lh-sm' + (validation_bonus ? ' clicked' : '')+'" id="Li' + productoId + '" style="margin-left: 15px; margin-bottom: 5px; display: flex; align-items: center;">' + 
+      '<div style="flex: 35%;">' + 
+        '<h6 class="my-0">' + nombres_productos[i].nombre + '</h6>' + 
+      '</div>' + 
+      '<div class="text-group" style="flex: 25%;">' + 
+        '<small class="text-muted" id="cant' + venta[i].code + '"> Cantidad: ' + venta[i].quantity + '</small>' + 
+        '<small class="text-muted">Precio unitario: $' + venta[i].unit_price + '</small>' + 
+      '</div>' + 
+      '<div id="alert_spent' + venta[i].code + '" class="icon-container container_spent" style="flex: 20%;">' +
+      (validation_spent ?
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-diamond-fill alert_true_spent" viewBox="0 0 16 16">' +
+          '<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/></svg>'
+          : '') +
+      '</div>' + 
+      '<span class="text-success full-value" id="value' + venta[i].code + '" style="flex: 15%;">Valor: $' + venta[i].full_value + '</span>' + 
+      '<div class="icon-container" id=' + 'icon-container' + productoId + ' style="flex: 5%;">' + 
+        '<i class="bi bi-patch-check icon_sale bonus-item' + (validation_bonus ? ' active_bonus' : '') + '" data-producto-idbonus=' + venta[i].code + '></i>' + 
+        '<i class="bi bi-dash-circle icon_sale menos-item" data-producto-idrest=' + venta[i].code + '></i>' + 
+        '<i class="bi bi-trash icon_sale remove-item" data-producto-idremove=' + venta[i].code + '></i>' + 
+      '</div>' + 
+    '</li>';
       $('#cart-items').prepend(itemHtml);
     }
   }
 
-  if (spent.includes(item.code)) {
-    alert('oe')
-    $('#alert_'+item.code).addClass('active_bonus');
-  }else{
-    alert('chao')
-  }
+
   // Calcula el precio total y lo muestra
   valor_final = 0;
   for (let i = 0; i < venta.length; i++) {
@@ -102,22 +158,52 @@ function additem(item, cantidad) {
   // Actualiza el total y aplica un estilo si es necesario
   $('#cart-total').html('<h3 id="valor_final">Total: $<strong class="' + (valor_final <= 0 ? 'producto-agotado' : '') + '">' + valor_final + '</strong>' +
     '<button type="button" class="btn btn-success float-end" data-bs-toggle="modal" id="Next" data-bs-target="#modalclient">Siguiente</button></h3>');
+  guardarCarritoEnLocalStorage();
+  console.log(spent)
 }
 
-function pre_venta(item, cantidad) {
-  
+function devolverAlInventario(producto, cantidad) {
+  var cantidaditem = cantidad || 1;
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: '/return/product/',
+      type: 'PUT',
+      dataType: 'json',
+      headers: {
+        'X-CSRFToken': csrfToken,
+        'Content-Type': 'application/json'
+      },
+      data: JSON.stringify({
+        "code": producto,
+        "amount": cantidaditem,
+      }),
+      traditional: true,
+      success: function(response) {
+        alert('Producto devuelto al inventario:', response.mensaje);
+        resolve(); // Resuelve la promesa cuando la solicitud AJAX tiene éxito
+      },
+      error: function(error){
+        console.error('Error al devolver el producto al inventario:', error);
+        reject(error); // Rechaza la promesa si hay un error
+      }
+    });
+  });
 }
 
 function removeItem(productoId, element) {
   for (let i = 0; i < venta.length; i++) {
     if (venta[i].code == productoId) {
-      valor_final -= venta[i].full_value;
+      var productoEliminado = venta[i];  // Almacena el producto antes de eliminarlo
+      devolverAlInventario(productoEliminado.code, productoEliminado.quantity)
+      valor_final -= productoEliminado.full_value;
       nombres_productos.splice(i, 1);
       venta.splice(i, 1);
       if (venta.length <= 0) {
+        alert(',mmm')
+        limpiarLocalStorage();
         document.getElementById('valor_final').innerHTML = 'Total: $<strong>' + valor_final + '</strong>'+
         '<button type="button" class="btn btn-outline-success float-end" disabled>Siguiente</button>';
-      }else{
+      } else {
         $('#cart-total').html('<h3 id="valor_final">Total: $<strong>' + valor_final + '</strong>'+ 
         '<button type="button" class="btn btn-success float-end" data-bs-toggle="modal" id="Next" data-bs-target="#modalclient">Siguiente</button></h3>');
       }
@@ -132,6 +218,8 @@ function removeItem(productoId, element) {
   if (index > -1) {
     liId.splice(index, 1);
   }
+
+  guardarCarritoEnLocalStorage();
 }
 
 function sendsale(client, products, final_value, pay) {
@@ -249,6 +337,7 @@ function sendsale(client, products, final_value, pay) {
         console.log(error)
       }
   });
+  limpiarLocalStorage()
 }
 
 function imprimirFactura(ventaId) {
@@ -267,6 +356,59 @@ $('.inputproducts').keypress(function(event) {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
+  
+  function cargarCarritoDesdeLocalStorage() {
+    const carritoGuardado = localStorage.getItem('carrito');
+    if (carritoGuardado) {
+      alert('Hay una venta en curso')
+      console.log(carritoGuardado)
+      venta = JSON.parse(carritoGuardado);
+      nombres_productos = JSON.parse(localStorage.getItem('nombres_productos')) || [];
+      liId = JSON.parse(localStorage.getItem('liId')) || [];
+      spent = JSON.parse(localStorage.getItem('spent')) || [];
+      spent_alert = JSON.parse(localStorage.getItem('spent_alert')) || [];
+    }
+  }
+
+  function actualizarInterfaz() {
+    $('#cart-items').html('');
+
+    if (venta.length > 0) {
+      for (let i = 0; i < venta.length; i++) {
+        const productoId = parseInt(venta[i].code);
+
+        const itemHtml = '<li class="list-group-item d-flex justify-content-between lh-sm" id="Li' + productoId + '">' +
+          '<div>' +
+            '<h6 class="my-0">' + nombres_productos[i].nombre + '</h6>' +
+            '<div class="text-group">' +
+              '<small class="text-muted" id="cant' + venta[i].code + '"> Cantidad: ' + venta[i].quantity + '</small>' +
+              '<small class="text-muted"> Precio unitario: $' + venta[i].unit_price + '</small>' +
+            '</div>' +
+          '</div>' +
+          '<span class="text-success full-value" id="value' + venta[i].code + '"> Valor: $' + venta[i].full_value + '</span>' +
+          '<div class="icon-container" id="icon-container' + productoId + '">' +
+            '<i class="bi bi-patch-check icon_sale bonus-item' + (liId.includes(productoId) ? ' active_bonus' : '') + '" data-producto-idbonus=' + venta[i].code + '></i>' +
+            '<i class="bi bi-dash-circle icon_sale menos-item" data-producto-idrest=' + venta[i].code + '></i>' +
+            '<i class="bi bi-trash icon_sale remove-item" data-producto-idremove=' + venta[i].code + '></i>' +
+          '</div>' +
+        '</li>';
+
+        $('#cart-items').append(itemHtml);
+      }
+
+      valor_final = venta.reduce((total, producto) => total + parseFloat(producto.full_value), 0);
+
+      const count = venta.length;
+      $('.badge').text(count);
+
+      $('#cart-total').html('<h3 id="valor_final">Total: $<strong class="' + (valor_final <= 0 ? 'producto-agotado' : '') + '">' + valor_final + '</strong>' +
+        '<button type="button" class="btn btn-success float-end" data-bs-toggle="modal" id="Next" data-bs-target="#modalclient">Siguiente</button></h3>');
+    } else {
+      $('.badge').text('0');
+      $('#cart-total').html('<h3 id="valor_final">Total: $<strong>0</strong>' +
+        '<button type="button" class="btn btn-outline-success float-end" data-bs-toggle="modal" id="Next" disabled>Siguiente</button></h3>');
+    }
+  }
 
   $('#sendproduct').click(function () {
     const valor = $('.inputproducts').val();
@@ -285,6 +427,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         if (existe) { // El producto existe en la base de datos
           $('.inputproducts').val(''); // vaciar el campo de búsqueda
+          pre_venta(item)
           additem(item)
         } else{
           alert('el producto no existe')
@@ -318,7 +461,6 @@ document.addEventListener("DOMContentLoaded", function() {
                             '</li>'+
                             '</br>'
               lista.append(itemHtml);
-              console.log(lista)
             });
             // Actualiza el contenido de la tabla con los resultados
             $('#list-search-items').append(lista);
@@ -331,6 +473,23 @@ document.addEventListener("DOMContentLoaded", function() {
         }
       });
     },2000);
+  });
+
+  $(document).on('click', '.add_product_button', function() {
+    producto = $(this).data('producto');
+    $('#productexplorer').modal('hide');
+    $('.searchproducts').val('');
+    $('#product-name').text(producto.name+':');
+    $('#quantityProduct').modal('show');
+  });
+  
+  $(document).on('click', '.sendcantidad', function() {
+    let cantidad = $('.inputcantidad').val();
+    cantidad = parseFloat(cantidad);
+    pre_venta(producto, cantidad)
+    additem(producto, cantidad);
+    $('.inputcantidad').val('');
+    $('#quantityProduct').modal('hide');
   });
 
   $('#client').on('input', function() {
@@ -400,22 +559,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  $(document).on('click', '.add_product_button', function() {
-    producto = $(this).data('producto');
-    $('#productexplorer').modal('hide');
-    $('.searchproducts').val('');
-    $('#product-name').text(producto.name+':');
-    $('#quantityProduct').modal('show');
-  });
-  
-  $(document).on('click', '.sendcantidad', function() {
-    let cantidad = $('.inputcantidad').val();
-    cantidad = parseFloat(cantidad);
-    additem(producto, cantidad);
-    $('.inputcantidad').val('');
-    $('#quantityProduct').modal('hide');
-  });
-
   $(document).on('click', '.bonus-item', function(){
     let productoId = $(this).data('producto-idbonus');
     if ($(this).hasClass('active_bonus')) {
@@ -449,6 +592,7 @@ document.addEventListener("DOMContentLoaded", function() {
       if (venta[ind].quantity <=0) {
         removeItem(productoId, $(this));
       }else{
+        devolverAlInventario(venta[ind].code)
         venta[ind].full_value -= venta[ind].unit_price
         valor_final -= venta[ind].unit_price
         document.getElementById('cant'+venta[ind].code).innerHTML = 'Cantidad: ' + venta[ind].quantity;
@@ -457,10 +601,54 @@ document.addEventListener("DOMContentLoaded", function() {
         '<button type="button" class="btn btn-success float-end" data-bs-toggle="modal" id="Next" data-bs-target="#modalclient">Siguiente</button></h3>');
       }
     }
+    guardarCarritoEnLocalStorage();
   });
 
   $(document).on('click', '.remove-item', function() {
     var productoId = $(this).data('producto-idremove');
     removeItem(productoId, $(this));
   });
+
+  $(document).on('click','.delete_car', async function(){
+    for (let i = 0; i < venta.length; i++) {
+      await devolverAlInventario(venta[i].code, venta[i].quantity);
+    }
+    emptyHtml = ''
+    $('#client').val(emptyHtml);
+    $('#pay').val(emptyHtml);
+    $('#cart-items').html(emptyHtml);
+    $('.badge').text('0');
+    $('#cart-total').html('<h3 id="valor_final">Total: $<strong>0</strong>'+ 
+    '<button type="button" class="btn btn-outline-success float-end" data-bs-toggle="modal" id="Next" disabled>Siguiente</button></h3>');
+    venta = [];
+    nombres_productos = [];
+    liId = [];
+    producto;
+    valor_final = 0;
+    spent = [];
+    spent_alert = [];
+
+    // Limpiar el localStorage y restablecer las variables
+    localStorage.removeItem('carrito');
+    localStorage.removeItem('nombres_productos');
+    localStorage.removeItem('liId');
+    localStorage.removeItem('spent');
+    localStorage.removeItem('spent_alert');
+    emptyHtml = '';
+    $('#client').val(emptyHtml);
+    $('#pay').val(emptyHtml);
+    $('#cart-items').html(emptyHtml);
+    $('.badge').text('0');
+    $('#cart-total').html('<h3 id="valor_final">Total: $<strong>0</strong>'+ 
+    '<button type="button" class="btn btn-outline-success float-end" data-bs-toggle="modal" id="Next" disabled>Siguiente</button></h3>');
+    venta = [];
+    nombres_productos = [];
+    liId = [];
+    producto;
+    valor_final = 0;
+    spent = [];
+    spent_alert = [];
+  });
+cargarCarritoDesdeLocalStorage();
+actualizarInterfaz();
 });

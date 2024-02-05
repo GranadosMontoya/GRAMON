@@ -23,7 +23,7 @@ class Sales(models.Model):
     
 class SaleProduct(models.Model):
     sale = models.ForeignKey(Sales, on_delete=models.CASCADE)
-    code = models.ForeignKey(Products, on_delete=models.CASCADE)  # Asigna un valor predeterminado (por ejemplo, 1)
+    code = models.ForeignKey(Products, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     unit_price  = models.DecimalField(max_digits=50, decimal_places=2)
     full_value = models.DecimalField(max_digits=50, decimal_places=2)

@@ -220,3 +220,29 @@ li.clicked {
     color: #cc0000; /* Texto rojo oscuro */
 }
   
+.container_spent{
+    height: 30px;
+    width: 30px;
+}
+
+.alert_true_spent {
+    color: #F54848;
+    animation: pulse 2s ease infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(0.9);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.3;
+    }
+}
+
+.alert_true_spent:hover{
+    cursor: pointer;
+}
+  
+      

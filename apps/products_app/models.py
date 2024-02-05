@@ -6,7 +6,7 @@ from .managers_products import ProductsManager
 # Create your models here.
 
 class Products(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     code = models.CharField(max_length=50, primary_key=True)
     amount = models.IntegerField(default=0)
     entry_price = models.DecimalField(max_digits=10, decimal_places=0)

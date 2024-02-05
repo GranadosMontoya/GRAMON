@@ -20,10 +20,11 @@ class SalesSerializer(serializers.ModelSerializer):
         fields = ('user', 'client', 'products','valor_final', 'pay', 'change')
 
     def create(self, validated_data):
-        products_data = validated_data.pop('products')
+        list_products = validated_data.pop('products')
         sale = Sales.objects.create(**validated_data)
 
-        for product_data in products_data:
+        for product_data in list_products:
+            print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
             code = product_data['code']
             quantity = product_data['quantity']
             unit_price = product_data['unit_price']
@@ -35,7 +36,6 @@ class SalesSerializer(serializers.ModelSerializer):
             # Modificar la cantidad del producto
             SaleProduct.objects.create(code=code, sale=sale, quantity=quantity, unit_price=unit_price, full_value=full_value)
             product = Products.objects.get(code=code)
-            product.amount -= quantity
             valor_inicial = product.entry_price
             product.save()
 
@@ -50,8 +50,7 @@ class SalesSerializer(serializers.ModelSerializer):
             diferencia = full_value - valor_inicial_producto
             product_statistics.revenue += diferencia
             product_statistics.save()
-
-            return sale
+        return sale
 
 
 class SalesHistorySales(serializers.ModelSerializer):

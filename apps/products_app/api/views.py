@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 
 #import local
-from .seralizer import ProductsSerializer, UpdateProductSerializer
+from .seralizer import ProductsSerializer, UpdateProductSerializer, Pre_sale_Serializer
 from ..models import Products
 
 
@@ -31,6 +31,36 @@ class ProductsApi(ModelViewSet):
         queryset = queryset.order_by('name')
         return queryset
 
+class Pre_venta(APIView):
+    def put(self, request):
+        data = request.data
+        instance = Products.objects.get(code=data['code'])  # Obtén la instancia existente
+        serializer = Pre_sale_Serializer(instance, data=data, partial=True)  #partial=True para permitir campos parciales
+        if serializer.is_valid():
+            cantidad_producto = serializer.validated_data.get('amount')
+            instance.amount -= cantidad_producto
+            instance.save()
+            return Response({'mensaje': 'Datos recibidos y procesados correctamente'}, status=status.HTTP_200_OK)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class Return_venta(APIView):
+    def put(self, request):
+        data = request.data
+        instance = Products.objects.get(code=data['code'])  # Obtén la instancia existente
+        serializer = Pre_sale_Serializer(instance, data=data, partial=True)  #partial=True para permitir campos parciales
+        if serializer.is_valid():
+            cantidad_producto = serializer.validated_data.get('amount')
+            instance.amount += cantidad_producto
+            instance.save()
+            return Response({'mensaje': 'Sebas, segun ya se sumo'}, status=status.HTTP_200_OK)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class ProductUpdateView(APIView):
     def put(self, request):
@@ -42,7 +72,6 @@ class ProductUpdateView(APIView):
             return Response({'response':'Producto actualizado correctamente'})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     
     def delete(self, request):
         product_data = request.data

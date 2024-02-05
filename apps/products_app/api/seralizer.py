@@ -1,7 +1,5 @@
 # Import django
-from django.forms import ValidationError
 from rest_framework.serializers import ModelSerializer
-from rest_framework import serializers
 
 #Import local
 from..models import Products
@@ -19,18 +17,13 @@ class ProductsSerializer(ModelSerializer):
             'image',
         ]
 
-class Product_InvSerializer(serializers.ModelSerializer):
+
+class Pre_sale_Serializer(ModelSerializer):
     class Meta:
         model = Products
-        fields = ['code','amount']
-        extra_kwargs = {'amount': {'required': False}}
+        fields = ("code", "amount",)
 
-    def update(self, instance, validated_data):
-        instance.amount -= validated_data.get('amount', instance.amount)
-        instance.save()
-        return instance
-
-class UpdateProductSerializer(serializers.ModelSerializer):
+class UpdateProductSerializer(ModelSerializer):
     class Meta:
         model = Products
         fields = "__all__"

@@ -59,6 +59,8 @@ $('.modal_create_product').click(function () {
                     } else {
                       alert("Ha ocurrido un error en algunos campos")
                       console.error("Error en los siguientes campos:", fieldsWithErrors);
+                      $('.addproduct_boton').prop('disabled', false);
+                      $('.addproduct_boton').html('Crear Producto');
                     }
                   } else {
                     console.error("Error al crear el producto:", error);
