@@ -245,4 +245,8 @@ li.clicked {
     cursor: pointer;
 }
   
-      
+.vertical-center {
+    display: flex;
+    align-items: center;
+}
+    

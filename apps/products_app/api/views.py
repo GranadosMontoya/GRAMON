@@ -40,7 +40,7 @@ class Pre_venta(APIView):
             cantidad_producto = serializer.validated_data.get('amount')
             instance.amount -= cantidad_producto
             instance.save()
-            return Response({'mensaje': 'Datos recibidos y procesados correctamente'}, status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_200_OK)
         else:
             print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -55,7 +55,7 @@ class Return_venta(APIView):
             cantidad_producto = serializer.validated_data.get('amount')
             instance.amount += cantidad_producto
             instance.save()
-            return Response({'mensaje': 'Sebas, segun ya se sumo'}, status=status.HTTP_200_OK)
+            return Response({'mensaje': 'Productos devueltos exitosamente'}, status=status.HTTP_200_OK)
         else:
             print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
