@@ -74,7 +74,7 @@ function pre_venta(item, cantidad) {
   });
 }
 
-function additem(item, cantidad) {
+async function additem(item, cantidad) {
   var result = false;
   var cantidadItem = cantidad || 1;
 
@@ -85,7 +85,7 @@ function additem(item, cantidad) {
       result = true;
       document.getElementById('cant' + venta[i].code).innerHTML = 'Cantidad: ' + venta[i].quantity;
       document.getElementById('value' + venta[i].code).innerHTML = 'Valor: $' + venta[i].full_value;
-      consultarCantidad(item.code)
+      await consultarCantidad(item.code)
         .then(function(existe) {
           var listado = spent.includes(parseInt(item.code));
           if (listado) {
@@ -636,7 +636,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         await devolverAlInventario(venta[ind].code);
 
-        consultarCantidad(venta[ind].code)
+        await consultarCantidad(venta[ind].code)
           .then(function(existe) {
             var listado = spent.includes(parseInt(venta[ind].code));
             if (listado) {
@@ -656,6 +656,15 @@ document.addEventListener("DOMContentLoaded", function() {
               var alert_spent_element = document.getElementById('alert_spent' + venta[i].code);
               alert_spent_element.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-diamond-fill alert_true_spent" viewBox="0 0 16 16">' +
               '<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/></svg>';
+            }else{
+              if(error == 0){
+                var index = spent.indexOf(parseInt(venta[ind].code));
+                if (index !== -1) {
+                  spent.splice(index, 1);
+                  var alert_spent_element = document.getElementById('alert_spent' + venta[ind].code);
+                  alert_spent_element.innerHTML = '';
+                }
+              }
             }
           });
       }
