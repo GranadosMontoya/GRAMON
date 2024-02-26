@@ -578,14 +578,13 @@ document.addEventListener("DOMContentLoaded", function() {
           '<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/></svg>';
         }
         else {
-          if (venta[ind].code in spent_empty) {
-              var index = spent_empty.indexOf(venta[ind].code); // Encuentra el índice del elemento en spent_empty
-              if (index !== -1) {
-                  spent_empty.splice(index, 1); // Elimina el elemento del array
-              }
-              var alert_spent_element = document.getElementById('alert_spent' + venta[ind].code);
-              alert_spent_element.innerHTML = '';
+          var index = spent_empty.indexOf(venta[ind].code); // Encuentra el índice del elemento en spent_empty
+          if (index !== -1) {
+              spent_empty.splice(index, 1); // Elimina el elemento del array
           }
+          var alert_spent_element = document.getElementById('alert_spent' + venta[ind].code);
+          alert_spent_element.innerHTML = '';
+          
         }      
       }
     }
@@ -610,6 +609,7 @@ document.addEventListener("DOMContentLoaded", function() {
     liId = [];
     valor_final = 0;
     spent = [];
+    spent_empty = [];
     
 
     // Limpiar el localStorage y restablecer las variables
