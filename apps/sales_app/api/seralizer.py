@@ -24,7 +24,6 @@ class SalesSerializer(serializers.ModelSerializer):
         sale = Sales.objects.create(**validated_data)
 
         for product_data in list_products:
-            print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
             code = product_data['code']
             quantity = product_data['quantity']
             unit_price = product_data['unit_price']
@@ -34,13 +33,11 @@ class SalesSerializer(serializers.ModelSerializer):
             print(f"Debug: Antes de modificar la cantidad del producto - Código: {code}, Cantidad: {quantity}")
 
             # Modificar la cantidad del producto
-            SaleProduct.objects.create(code=code, sale=sale, quantity=quantity, unit_price=unit_price, full_value=full_value)
+            SaleProduct.objects.create(code=code, sale=sale, quantity=quantity, unit_price=unit_price, full_value=full_value)   
             product = Products.objects.get(code=code)
+            product.amount -= quantity
             valor_inicial = product.entry_price
             product.save()
-
-            # Agrega otra línea para imprimir información de depuración
-            print(f"Debug: Antes de modificar la estadística del producto - Código: {code}, Cantidad: {quantity}")
 
             # Modificar la estadística del producto
             product_statistics = Statistics_products.objects.get(code_statistics=code)

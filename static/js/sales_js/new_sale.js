@@ -1,39 +1,9 @@
 var venta = [];
 var nombres_productos = [];
 var liId = [];
-let producto;
 let valor_final = 0;
-var spent = [];
-var spentActionDone = false
-
-function consultarCantidad(item) {
-  return new Promise(function(resolve, reject) {
-    $.ajax({
-      url: '/api/products/',
-      method: 'GET',
-      data: { search: item },
-      success: function (data) {
-        let existe = false;
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].code == item) {
-            existe = true;
-            var producto = data[i];
-            break;
-          }
-        }
-        if (existe && producto.amount > 0) {
-          resolve(producto.amount); // Resuelve la promesa con true si el producto existe y hay cantidad disponible
-        }
-        else {
-          reject(producto.amount); // Rechaza la promesa con false si el producto no existe o no hay cantidad disponible
-        }
-      },
-      error: function(xhr, status, error) {
-        reject(error); // Rechaza la promesa con el error si ocurre un problema en la solicitud AJAX
-      }
-    });
-  });
-}
+var spent = {};
+var spent_empty = [];
 
 function limpiarLocalStorage() {
   return new Promise((resolve) => {
@@ -41,6 +11,7 @@ function limpiarLocalStorage() {
     localStorage.removeItem('nombres_productos');
     localStorage.removeItem('liId');
     localStorage.removeItem('spent');
+    localStorage.removeItem('spent_empty');
     resolve();
   });
 }
@@ -50,31 +21,11 @@ function guardarCarritoEnLocalStorage() {
   localStorage.setItem('nombres_productos', JSON.stringify(nombres_productos));
   localStorage.setItem('liId', JSON.stringify(liId));
   localStorage.setItem('spent', JSON.stringify(spent));
+  localStorage.setItem('spent_empty', JSON.stringify(spent_empty));
 }
 
-function pre_venta(item, cantidad) {
-  var cantidadItem = cantidad || 1;
-  var codigo = item.code
-  $.ajax({
-    url: '/pre_venta/product/',
-    type: 'PUT',
-    dataType: 'json',
-    headers: {
-        'X-CSRFToken': csrfToken,
-        'Content-Type': 'application/json'
-    },
-    data: JSON.stringify({
-        "code": codigo,
-        "amount":cantidadItem,
-    }),
-    traditional: true,
-    success: function(response) {
-      alert(response.mensaje)
-    }
-  });
-}
+function additem(item, cantidad) {
 
-async function additem(item, cantidad) {
   var result = false;
   var cantidadItem = cantidad || 1;
 
@@ -85,33 +36,42 @@ async function additem(item, cantidad) {
       result = true;
       document.getElementById('cant' + venta[i].code).innerHTML = 'Cantidad: ' + venta[i].quantity;
       document.getElementById('value' + venta[i].code).innerHTML = 'Valor: $' + venta[i].full_value;
-      await consultarCantidad(item.code)
-        .then(function(existe) {
-          var listado = spent.includes(parseInt(item.code));
-          if (listado) {
-            var index = spent.indexOf(parseInt(item.code));
-            if (index !== -1) {
-              spent.splice(index, 1);
-              var alert_spent_element = document.getElementById('alert_spent' + venta[i].code);
-              alert_spent_element.innerHTML = '';
-            }
-          }
-        })
-        .catch(function(error) {
-          var listado = spent.includes(item.code);
-          if (!listado) {
-            spent.push(item.code);
-            spent = spent.map(code => parseInt(code));
+
+      spent[item.code] -= cantidadItem;
+      let cantidad_dispo = spent[item.code]
+
+      if(cantidad_dispo < 0){
+        if (!(item.code in spent_empty)) {
+          spent_empty.push(item.code);
+          spent_empty = spent_empty.map(code => parseInt(code));
+        }
+        var alert_spent_element = document.getElementById('alert_spent' + venta[i].code);
+        alert_spent_element.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-diamond-fill alert_true_spent" viewBox="0 0 16 16">' +
+        '<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/></svg>';
+      }
+      else{
+        if (item.code in spent_empty) {
+          var index = spent.indexOf(parseInt(item.code));
+          if (index !== -1) {
+            spent_empty.splice(index, 1);
             var alert_spent_element = document.getElementById('alert_spent' + venta[i].code);
-            alert_spent_element.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-diamond-fill alert_true_spent" viewBox="0 0 16 16">' +
-            '<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/></svg>';
+            alert_spent_element.innerHTML = '';
           }
-        });
-      break;
+        }
+      }
+
+      for (var key in spent) {
+        if (spent.hasOwnProperty(key)) {
+            console.log("Clave: " + key + ", Valor: " + spent[key]);
+        }
+      }
     }
   }
 
   if (!result) { // El producto no existe en la venta, agrega uno nuevo
+    
+    spent[item.code] = parseInt(item.amount);
+
     var producto = {
       code: parseInt(item.code),
       quantity: cantidadItem,
@@ -125,22 +85,20 @@ async function additem(item, cantidad) {
     nombres_productos.push(nombres_productos_item);
     venta.push(producto);
 
+    spent[item.code]-=cantidadItem;
 
-    if (item.amount <= 0) {
-      var listado = spent.includes(item.code);
-      if (!listado) {
-        spent.push(item.code);
-        spent = spent.map(code => parseInt(code));
-      }
+    let cantidad_dispo = spent[item.code]
+    if(cantidad_dispo < 0){
+      spent_empty.push(item.code);
+      spent_empty = spent_empty.map(code => parseInt(code));
     }
-    
 
     // Actualiza elementos HTML para reflejar los cambios
     $('#cart-items').html('');
     for (let i = 0; i < venta.length; i++) {
       const productoId = parseInt(venta[i].code);
       const validation_bonus = liId.includes(productoId);
-      const validation_spent = spent.includes(venta[i].code);
+      const validation_spent = spent_empty.includes(venta[i].code);
       // Construye elementos HTML para cada producto en el carrito
       itemHtml = '<li class="list-group-item d-flex justify-content-between lh-sm' + (validation_bonus ? ' clicked' : '')+'" id="Li' + productoId + '" style="margin-left: 15px; margin-bottom: 5px; display: flex; align-items: center;">' + 
       '<div style="flex: 35%;">' + 
@@ -185,52 +143,27 @@ async function additem(item, cantidad) {
   guardarCarritoEnLocalStorage();
 }
 
-function devolverAlInventario(producto, cantidad) {
-  var cantidaditem = cantidad || 1;
-  return new Promise((resolve, reject) => {
-    $.ajax({
-      url: '/return/product/',
-      type: 'PUT',
-      dataType: 'json',
-      headers: {
-        'X-CSRFToken': csrfToken,
-        'Content-Type': 'application/json'
-      },
-      data: JSON.stringify({
-        "code": producto,
-        "amount": cantidaditem,
-      }),
-      traditional: true,
-      success: function(response) {
-        console.log(response)
-        resolve(); // Resuelve la promesa cuando la solicitud AJAX tiene éxito
-      },
-      error: function(error){
-        console.error('Error al devolver el producto al inventario:', error);
-        reject(error); // Rechaza la promesa si hay un error
-      }
-    });
-  });
-}
-
 function removeItem(productoId, element) {
   for (let i = 0; i < venta.length; i++) {
     if (venta[i].code == productoId) {
-      var productoEliminado = venta[i];  // Almacena el producto antes de eliminarlo
-      devolverAlInventario(productoEliminado.code, productoEliminado.quantity)
-      valor_final -= productoEliminado.full_value;
-      nombres_productos.splice(i, 1);
-      venta.splice(i, 1);
-      if (venta.length <= 0) {
-        spentActionDone = false
-        limpiarLocalStorage();
-        document.getElementById('valor_final').innerHTML = 'Total: $<strong>' + valor_final + '</strong>'+
-        '<button type="button" class="btn btn-outline-success float-end" disabled>Siguiente</button>';
-      } else {
-        $('#cart-total').html('<h3 id="valor_final">Total: $<strong>' + valor_final + '</strong>'+ 
-        '<button type="button" class="btn btn-success float-end" data-bs-toggle="modal" id="Next" data-bs-target="#modalclient">Siguiente</button></h3>');
-      }
-      break;
+        var productoEliminado = venta[i];  // Almacena el producto antes de eliminarlo
+        valor_final -= productoEliminado.full_value;
+        nombres_productos.splice(i, 1);
+        venta.splice(i, 1);
+        delete spent[productoId]; // Elimina la entrada correspondiente en spent
+        var indexx = spent_empty.indexOf(parseInt(productoId));
+        if (indexx !== -1) {
+            spent_empty.splice(indexx, 1); // Elimina el producto del spent_empty
+        }
+        if (venta.length <= 0) {
+            limpiarLocalStorage();
+            document.getElementById('valor_final').innerHTML = 'Total: $<strong>' + valor_final + '</strong>'+
+                '<button type="button" class="btn btn-outline-success float-end" disabled>Siguiente</button>';
+        } else {
+            $('#cart-total').html('<h3 id="valor_final">Total: $<strong>' + valor_final + '</strong>'+ 
+                '<button type="button" class="btn btn-success float-end" data-bs-toggle="modal" id="Next" data-bs-target="#modalclient">Siguiente</button></h3>');
+        }
+        break;
     }
   }
   element.closest('.list-group-item').remove();
@@ -239,9 +172,8 @@ function removeItem(productoId, element) {
   $('.badge').text(count);
   const index = liId.indexOf(productoId);
   if (index > -1) {
-    liId.splice(index, 1);
+      liId.splice(index, 1);
   }
-
   guardarCarritoEnLocalStorage();
 }
 
@@ -278,7 +210,7 @@ function sendsale(client, products, final_value, pay) {
         toast.show()
         venta = [];
         nombres_productos = [];
-        spentActionDone = false;
+        ;
         $.ajax({
           url: '/api/v1/sales/',
           method : 'GET',
@@ -389,6 +321,8 @@ document.addEventListener("DOMContentLoaded", function() {
       nombres_productos = JSON.parse(localStorage.getItem('nombres_productos')) || [];
       liId = JSON.parse(localStorage.getItem('liId')) || [];
       spent = JSON.parse(localStorage.getItem('spent')) || [];
+      spent_empty = JSON.parse(localStorage.getItem('spent_empty')) || [];
+
     }
   };
 
@@ -398,7 +332,7 @@ document.addEventListener("DOMContentLoaded", function() {
       for (let i = 0; i < venta.length; i++) {
         const productoId = parseInt(venta[i].code);
         const validation_bonus = liId.includes(productoId);
-        const validation_spent = spent.includes(venta[i].code);
+        const validation_spent = spent_empty.includes(venta[i].code);
         // Construye elementos HTML para cada producto en el carrito
         itemHtml = '<li class="list-group-item d-flex justify-content-between lh-sm' + (validation_bonus ? ' clicked' : '')+'" id="Li' + productoId + '" style="margin-left: 15px; margin-bottom: 5px; display: flex; align-items: center;">' + 
           '<div style="flex: 35%;">' + 
@@ -460,7 +394,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         if (existe) { // El producto existe en la base de datos
           $('.inputproducts').val(''); // vaciar el campo de búsqueda
-          pre_venta(item)
           additem(item)
         } else{
           $('.inputproducts').val(''); // vaciar el campo de búsqueda
@@ -633,40 +566,27 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('value'+venta[ind].code).innerHTML = 'Valor: $' + venta[ind].full_value;
         $('#cart-total').html('<h3 id="valor_final">Total: $<strong>' + valor_final + '</strong>'+ 
         '<button type="button" class="btn btn-success float-end" data-bs-toggle="modal" id="Next" data-bs-target="#modalclient">Siguiente</button></h3>');
-
-        await devolverAlInventario(venta[ind].code);
-
-        await consultarCantidad(venta[ind].code)
-          .then(function(existe) {
-            var listado = spent.includes(parseInt(venta[ind].code));
-            if (listado) {
-              var index = spent.indexOf(parseInt(venta[ind].code));
+        spent[venta[ind].code]+=1;
+        let cantidad_dispo = spent[venta[ind].code]
+        if(cantidad_dispo < 0){
+          if (!spent_empty.includes(venta[ind])) {
+            spent_empty.push(venta[ind]);
+            spent_empty = spent_empty.map(code => parseInt(code));
+          }       
+          var alert_spent_element = document.getElementById('alert_spent' + venta[ind].code);
+           alert_spent_element.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-diamond-fill alert_true_spent" viewBox="0 0 16 16">' +
+          '<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/></svg>';
+        }
+        else {
+          if (venta[ind].code in spent_empty) {
+              var index = spent_empty.indexOf(venta[ind].code); // Encuentra el índice del elemento en spent_empty
               if (index !== -1) {
-                spent.splice(index, 1);
-                var alert_spent_element = document.getElementById('alert_spent' + venta[ind].code);
-                alert_spent_element.innerHTML = '';
+                  spent_empty.splice(index, 1); // Elimina el elemento del array
               }
-            }
-          })
-          .catch(function(error) {
-            var listado = spent.includes(venta[ind].code);
-            if (!listado) {
-              spent.push(venta[ind].code);
-              spent = spent.map(code => parseInt(code));
-              var alert_spent_element = document.getElementById('alert_spent' + venta[i].code);
-              alert_spent_element.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-diamond-fill alert_true_spent" viewBox="0 0 16 16">' +
-              '<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/></svg>';
-            }else{
-              if(error == 0){
-                var index = spent.indexOf(parseInt(venta[ind].code));
-                if (index !== -1) {
-                  spent.splice(index, 1);
-                  var alert_spent_element = document.getElementById('alert_spent' + venta[ind].code);
-                  alert_spent_element.innerHTML = '';
-                }
-              }
-            }
-          });
+              var alert_spent_element = document.getElementById('alert_spent' + venta[ind].code);
+              alert_spent_element.innerHTML = '';
+          }
+        }      
       }
     }
     guardarCarritoEnLocalStorage();
@@ -678,9 +598,6 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   $(document).on('click','.delete_car', async function(){
-    for (let i = 0; i < venta.length; i++) {
-      await devolverAlInventario(venta[i].code, venta[i].quantity);
-    }
     emptyHtml = ''
     $('#client').val(emptyHtml);
     $('#pay').val(emptyHtml);
@@ -691,10 +608,9 @@ document.addEventListener("DOMContentLoaded", function() {
     venta = [];
     nombres_productos = [];
     liId = [];
-    producto;
     valor_final = 0;
     spent = [];
-    spentActionDone = false
+    
 
     // Limpiar el localStorage y restablecer las variables
     localStorage.removeItem('carrito');
@@ -711,7 +627,6 @@ document.addEventListener("DOMContentLoaded", function() {
     venta = [];
     nombres_productos = [];
     liId = [];
-    producto;
     valor_final = 0;
     spent = [];
   });

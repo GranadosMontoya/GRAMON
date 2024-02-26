@@ -17,12 +17,6 @@ class ProductsSerializer(ModelSerializer):
             'image',
         ]
 
-
-class Pre_sale_Serializer(ModelSerializer):
-    class Meta:
-        model = Products
-        fields = ("code", "amount",)
-
 class UpdateProductSerializer(ModelSerializer):
     class Meta:
         model = Products
