@@ -453,7 +453,6 @@ document.addEventListener("DOMContentLoaded", function() {
   $(document).on('click', '.sendcantidad', function() {
     let cantidad = $('.inputcantidad').val();
     cantidad = parseFloat(cantidad);
-    pre_venta(producto, cantidad)
     additem(producto, cantidad);
     $('.inputcantidad').val('');
     $('#quantityProduct').modal('hide');
