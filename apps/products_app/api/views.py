@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 
 #import local
-from .seralizer import ProductsSerializer, UpdateProductSerializer
+from .seralizer import ProductsSerializer, UpdateProductSerializer, SupplySerializer
 from ..models import Products
 
 
@@ -30,7 +30,6 @@ class ProductsApi(ModelViewSet):
                 )
         queryset = queryset.order_by('name')
         return queryset
-
 
 
 class ProductUpdateView(APIView):
@@ -52,10 +51,26 @@ class ProductUpdateView(APIView):
             return Response({'mensaje':'Producto eliminado con exito'})
         else:
             return Response({'mensaje':'No existe el producto'})
-    
-    def get(self, request):
-        return Response ({'mensaje':'no sirvo'})
+        
+    def post(self, request):
+        product_data = request.data
+        producto = Products.objects.get(code=product_data['code'])
+        serializer = SupplySerializer(producto, data=product_data)
+        if serializer.is_valid():
+            cantidad_recibida = int(product_data.get('amount', 0))
+            producto.amount += cantidad_recibida
+            producto.save()
+            return Response({'response':'Producto surtido correctamente'})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class SupplyProduct(ModelViewSet):
+    serializer_class = SupplySerializer
+    queryset = Products.objects.all()
+    
+def ModalSupplyProduct(request):
+    return render(request, 'products/supply_product.html')
 
 def ModalAddProduct(request):
     return render(request, 'products/Form_add_product.html') 

@@ -1,0 +1,37 @@
+.addproduct_title {
+    font-size: medium;
+    margin-bottom: 5px;
+}
+
+.addproduct_input {
+    background: rgb(244, 244, 244);
+    width: 80%;
+    border-radius: 15px;
+    padding: 10px;
+    font-family: poppins;
+    border: 1px solid rgb(198, 198, 198);
+    text-align: center;
+    margin: 10px auto
+}
+
+.addproduct_boton {
+    background: rgb(25, 173, 38);
+    width: 50%;
+    border: none;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 15px;
+    font-family: poppins;
+    color: white;
+    font-size: 15px;
+}
+
+
+.addproduct_label {
+    font-size: 12px;
+    padding: 3px;
+}
+
+#alert_digit{
+    font-size: small;
+}

@@ -21,3 +21,10 @@ class UpdateProductSerializer(ModelSerializer):
     class Meta:
         model = Products
         fields = "__all__"
+
+class SupplySerializer(ModelSerializer):
+    class Meta: 
+        model = Products
+        fields = ['amount','code']
+    
+    
