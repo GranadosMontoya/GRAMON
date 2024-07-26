@@ -2,7 +2,21 @@
     background-color:#FDFEFE;
 }
 
-#icon-gramon{
+.navbar-toggler.icon_principal {
+    background-color: transparent; /* Asegura que no haya fondo que cambie al hacer clic */
+    padding: 0; /* Ajusta el padding según necesites */
+    outline: none; /* Quita el contorno de enfoque */
+}
+
+.navbar-toggler.icon_principal:focus,
+.navbar-toggler.icon_principal:active,
+.navbar-toggler.icon_principal:hover {
+    outline: none; /* Quita el contorno de enfoque en todos los estados */
+    box-shadow: none; /* Quita cualquier sombra aplicada en estos estados */
+    background-color: transparent; /* Asegura que el fondo no cambie */
+}
+
+#icon-gramon {
     width: 180px;
     margin-left: -20px;
 }
@@ -38,13 +52,16 @@
 }
 
 .offcanvas-header{
-    background-color:#03A64A;
+    background-color:#fdfefe;
 }
 
 .offcanvas-title {
-    color: white;
+    color: #03A64A;
 }
 
+#offcanvasNavbarLabel{
+font-size: xx-large;
+}
 .colored-svg {
     color: #03A64A;
     display: flex;

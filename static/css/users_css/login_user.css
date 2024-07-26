@@ -122,7 +122,7 @@ body {
 @media (max-width: 768px) {
   /* Modificar el ancho para pantallas más pequeñas */
   .sesion {
-    width: 80%; /* Ajusta el ancho según tus necesidades */
+    width: 80%; /* Ajusta el ancho según necesidades */
   }
   .fondo {
     display: none;

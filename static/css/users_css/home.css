@@ -1,55 +1,50 @@
-#contentContainer{
-    background-image: url(../../img/imagen-1.jpg);
-    background-repeat: no-repeat;
-    background-size: 50%;
-    background-position-x: 50%;
-    background-attachment: fixed;
-    width: 100%;
-    height: 100vh;
-    overflow-y: hidden;
-}
-
-.home_main {
-    text-align: center;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    overflow-x: auto;
-    height: 100%;
-    width: 100%;
+#contentContainer {
+    height: 100vh; /* Ocupa el 100% de la altura del viewport */
+    width: 100%; /* Ocupa el 100% del ancho del viewport */
+    display: none; /* Oculto por defecto, se mostrará una vez que la pantalla de carga se oculte */
+    overflow: auto; /* Permite el desplazamiento si el contenido es más grande que el viewport */
 }
 
 .home_main h1 {
-    font-size: 36px;
+    font-size: large;
     color: #03A64A;
 }
 
-.home_main p {
-    font-size: 18px;
-    color: #817b7b;
+header {
+    background-color: #FFFFFF; /* Blanco para un fondo limpio y profesional */
+    color: #333333; /* Texto en gris oscuro para un buen contraste */
+    padding: 20px; /* Padding adecuado para espaciado */
+    box-shadow: 0 10px 10px rgba(0.1, 0, 0, 0.1); /* Sombra sutil para profundidad */
+    margin: 15px;
 }
 
-.home_main ul {
-    list-style: none;
-    padding: 0;
+/* Vamos aqui */
+
+#kpis {
+    display: flex;
+    justify-content: space-around;
 }
 
-.home_main ul li {
-    font-size: 16px;
-    color: #444;
-}
-
-.btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background: #007BFF;
-    color: #fff;
-    text-decoration: none;
-    border: none;
+.kpi {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
     border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    width: 24%;
+}
+
+.kpi h2 {
+    margin: 0 0 10px;
     font-size: 18px;
 }
 
-.btn:hover {
-    background: #0056b3;
+.kpi p {
+    font-size: 24px;
+    margin: 0;
+    color: #007bff;
+}
+
+#contentContainer{
+    background-color: #F2F4F4;
 }

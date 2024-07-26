@@ -3,6 +3,14 @@
     --bs-tooltip-color: var(--bs-white);
 }
 
-#contentContainer{
-    background-color: #F2F4F4;
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Asegura que html y body ocupen toda la altura de la ventana */
+}
+
+.content {
+    min-height: 100vh; /* Asegura que el cuerpo tenga al menos el tamaño de la pantalla */
+    display: flex;
+    flex-direction: column;
 }
