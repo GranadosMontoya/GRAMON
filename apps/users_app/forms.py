@@ -11,11 +11,10 @@ class LoginForm(AuthenticationForm):
         widget=forms.TextInput(
             attrs={
                 'class':'form-control',
-                'placeholder':'Nombre de usuario',
+                'placeholder':'Usuario',
             }
         )
     )
-
     
     password = forms.CharField(
         strip=False,

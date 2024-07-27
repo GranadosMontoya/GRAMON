@@ -13,7 +13,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #ffffff; /* ¿Seguro de que necesitas este fondo blanco? */
+  background: #ffffff; 
   font-family: Arial, sans-serif; /* Agrega el tipo de fuente aquí */
   color: #333; /* Color de texto predeterminado */
 }
@@ -119,12 +119,22 @@ body {
   margin: 0 auto; /* Centra horizontalmente */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 750px) {
   /* Modificar el ancho para pantallas más pequeñas */
   .sesion {
-    width: 80%; /* Ajusta el ancho según necesidades */
+    width: 70%; /* Ajusta el ancho según necesidades */
   }
   .fondo {
     display: none;
   }
+  body{
+    background-image: url("/static/img/este-si.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+
 }
