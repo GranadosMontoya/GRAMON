@@ -10,7 +10,7 @@
     color: #03A64A;
 }
 
-header {
+#header_panel_de_control {
     background-color: #FFFFFF; /* Blanco para un fondo limpio y profesional */
     color: #333333; /* Texto en gris oscuro para un buen contraste */
     padding: 20px; /* Padding adecuado para espaciado */
@@ -18,11 +18,10 @@ header {
     margin: 15px;
 }
 
-/* Vamos aqui */
-
 #kpis {
     display: flex;
     justify-content: space-around;
+    padding: 20px; /* Padding adecuado para espaciado */
 }
 
 .kpi {
@@ -32,7 +31,10 @@ header {
     padding: 20px;
     text-align: center;
     width: 24%;
+    box-shadow: 0 10px 10px rgba(0.1, 0, 0, 0.1); /* Sombra sutil para profundidad */
 }
+
+/* Vamos aqui */
 
 .kpi h2 {
     margin: 0 0 10px;

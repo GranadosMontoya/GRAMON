@@ -27,6 +27,7 @@ urlpatterns = [
     re_path('',include('apps.sales_app.urls')),
     re_path('',include('apps.customers_app.api.router')),
     re_path('',include('apps.products_app.api.router')),
+    re_path('',include('apps.users_app.api.router')),
     re_path('',include('apps.sales_app.api.router')),
     re_path('',include('apps.dashboard_products.urls')),
     re_path('',include('apps.dashboard_products.api.router')),

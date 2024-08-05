@@ -1,5 +1,5 @@
 #Import django
-from django.views.generic import CreateView, ListView
+from django.views.generic import ListView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 

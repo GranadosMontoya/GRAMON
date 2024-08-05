@@ -1,35 +1,43 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block head %}
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.118.2">
     <link rel="stylesheet" href="{% static 'css/users_css/home.css' %}">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/dashboard/">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+    <link href="{% static 'css/dashboard_products_css/dashboard.css' %}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Home</title>
 {% endblock head %}
 
-
 {% block content %}
   <main class="home_main">
-    <header>
+    <header id="header_panel_de_control">
       <h1>Panel de Control</h1>
     </header>
       <section id="kpis">
         <div class="kpi">
-            <h2>Total de Ventas</h2>
-            <p>$123,456</p>
+            <h2>Valor ventas del día</h2>
+            <p id="daily_sale">...</p>
         </div>
         <div class="kpi">
-            <h2>Clientes Nuevos</h2>
-            <p>45</p>
-        </div>
-        <div class="kpi">
-          <h2>Clientes Nuevos</h2>
-          <p>45</p>
-      </div>
-      <div class="kpi">
-        <h2>Clientes Nuevos</h2>
-        <p>45</p>
-    </div>
-    
-        <!-- Otros KPIs -->
+            <h2>Cantidad de ventas</h2>
+            <p id="count_sale">...</p>
+        </div>  
       </section>
     </main>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Ventas del día</h2>
+          <canvas class="my-4" id="salesChart"></canvas>
+        </div>
+      </div>
+  </div>
 {% endblock content %}
+
+{% block scriptjs %}
+    <script src="{% static 'js/home_js/home.js' %}"></script>
+{% endblock scriptjs %}
