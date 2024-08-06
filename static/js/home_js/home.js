@@ -7,7 +7,7 @@ $(document).ready(function() {
         method: 'GET',
         dataType: 'json',
         success: function (resultado){
-
+            
             let sumaTotal = resultado.reduce((acumulador, objeto) => {
                 return acumulador + parseFloat(objeto.valor_final);
             }, 0);
@@ -18,7 +18,7 @@ $(document).ready(function() {
             document.getElementById('count_sale').textContent = countsale
 
             // Procesar los datos
-            const labels = resultado.map(item => item.created_at.split('T')[0]); // Extraer solo la fecha
+            const labels = resultado.map(item => 'Factura N°'+item.id); // Extraer solo la fecha
             const valores = resultado.map(item => parseFloat(item.valor_final));
 
             // Crear el gráfico
@@ -28,7 +28,7 @@ $(document).ready(function() {
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: false,
+                        label: 'Ventas del dia',
                         data: valores,
                         fill: false, // No rellenar el área bajo la línea
                         borderColor: 'rgba(75, 192, 192, 1)',
@@ -52,11 +52,6 @@ $(document).ready(function() {
                         }
                     },
                 },
-                plugins: {
-                    legend: {
-                        display: false // Opcional: ocultar la leyenda si no la necesitas
-                    }
-                }
             });
         }
     });

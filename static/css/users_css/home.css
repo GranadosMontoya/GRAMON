@@ -21,7 +21,7 @@
 #kpis {
     display: flex;
     justify-content: space-around;
-    padding: 20px; /* Padding adecuado para espaciado */
+    padding: 10px; /* Padding adecuado para espaciado */
 }
 
 .kpi {
@@ -34,9 +34,15 @@
     box-shadow: 0 10px 10px rgba(0.1, 0, 0, 0.1); /* Sombra sutil para profundidad */
 }
 
+.custom_chart {
+    height: 5%;
+    width: 45%;
+    max-width: 1200px; /* O cualquier ancho máximo que desees */
+    margin: 0 auto;    /* Para centrar el contenedor si es más estrecho que el viewport */
+}
 /* Vamos aqui */
 
-.kpi h2 {
+.kpi h4 {
     margin: 0 0 10px;
     font-size: 18px;
 }
@@ -49,4 +55,25 @@
 
 #contentContainer{
     background-color: #F2F4F4;
+}
+
+@media (max-width: 750px) {
+    .custom_chart {
+        height: 5%;
+        width: 100%;
+    }
+
+    .kpi {
+        width: 25%;
+    }
+
+    .kpi p {
+        font-size: 15px;
+        margin: 0;
+        color: #007bff;
+    }
+
+    .kpi h4 {
+        font-size: 13px;
+    }
 }
