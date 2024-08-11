@@ -273,4 +273,10 @@ li.clicked {
         border-width: 2px; /* Grosor del borde */
         margin: 8px;
     }
+    .container-fluid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 }
