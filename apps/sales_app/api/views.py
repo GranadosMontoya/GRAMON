@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 #import rest_framework
 from rest_framework.response import Response
@@ -17,8 +19,11 @@ from ..models import Sales, SaleProduct
 from .paginated import MediumPagination
 
 
-class SalesView(APIView):
+class SalesView(LoginRequiredMixin,APIView):
 
+    login_url = reverse_lazy('user_app:login')
+
+    
     def post(self, request):
         data = request.data.copy()
         data['user'] = request.user.id
@@ -53,10 +58,11 @@ class SalesView(APIView):
         except Sales.DoesNotExist:
             return HttpResponse('Venta no encontrada')
         
-class SalesApi(ModelViewSet):
+class SalesApi(LoginRequiredMixin,ModelViewSet):
     serializer_class = SalesHistorySales
     queryset = Sales.objects.all()
     pagination_class = MediumPagination
+    login_url = reverse_lazy('user_app:login')
 
     def get_queryset(self):
         queryset = self.queryset
@@ -69,6 +75,6 @@ class SalesApi(ModelViewSet):
             )
         return queryset
     
-@login_required
+@login_required(login_url='/')
 def new_sale(request):
     return render(request, 'sales/new_sale.html')

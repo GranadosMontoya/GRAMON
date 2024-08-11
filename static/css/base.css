@@ -14,3 +14,10 @@ html, body {
     display: flex;
     flex-direction: column;
 }
+
+    .contentContainer{
+        display: flex;
+        flex-direction: column; /* Si deseas centrar en columna, ajusta según sea necesario */
+        align-items: center;    /* Centra los elementos horizontalmente */
+        text-align: center; 
+    }

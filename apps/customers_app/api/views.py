@@ -1,10 +1,9 @@
 #import django
-from django.shortcuts import render
 from django.db.models import Q
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 #import rest_framework
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 #import local
@@ -12,13 +11,10 @@ from .seralizer import customerSerializer
 from ..models import Customer
 
 
-def pruebaajax(request):
-    return render(request, 'esq.html')
-
-
-class CustomerApi(ModelViewSet):
+class CustomerApi(LoginRequiredMixin,ModelViewSet):
     serializer_class = customerSerializer
     queryset = Customer.objects.all()
+    login_url = reverse_lazy('user_app:login')
 
     def get_queryset(self):
         queryset = self.queryset

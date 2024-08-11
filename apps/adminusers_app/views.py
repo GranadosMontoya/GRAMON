@@ -8,13 +8,16 @@ from django.urls import reverse_lazy
 from .forms import UserCreateForm,UserUpdateForm
 from .models import User
 from .mixing_admin import MixingAdmin
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-
-class UserCreateView(CreateView):
+class UserCreateView(LoginRequiredMixin,CreateView):
     """Clase para crear usuarios"""
     form_class = UserCreateForm
     template_name = "users/create_user.html"
     success_url = reverse_lazy('admin_app:list_user')
+    login_url = reverse_lazy('user_app:login')
+
     
 class UserListView(LoginRequiredMixin,MixingAdmin,ListView):
     model = User

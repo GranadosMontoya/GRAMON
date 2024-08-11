@@ -14,6 +14,10 @@
 
 .base_form_sale{
     width: 100%;
+    display: flex;
+    flex-direction: column; /* Si deseas centrar en columna, ajusta según sea necesario */
+    align-items: center;    /* Centra los elementos horizontalmente */
+    margin: -1px;
 }
 
 .car{
@@ -97,10 +101,6 @@ li.clicked {
 .text-group {
     display: flex;
     flex-direction: column;
-}
-
-.full-value {
-    padding-top: 15px;
 }
 
 #cart-total{
@@ -252,12 +252,6 @@ li.clicked {
     border-width: 2px; /* Grosor del borde */
     margin: 10px;
 }
-
-#valor_final{
-    border-width: 2px; /* Grosor del borde */
-    margin: 10px;
-}
-
 
 @media (max-width: 750px) {
     .delete_car {

@@ -1,7 +1,5 @@
 # dashboard/views.py
 from django.shortcuts import render
-from django.http import JsonResponse
-from decimal import Decimal
 from .models import Statistics_products
 
 def dashboard(request):

@@ -2,6 +2,9 @@
 import json
 from django.db.models import Q
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 
 #import rest_framework
@@ -16,9 +19,11 @@ from .seralizer import ProductsSerializer, UpdateProductSerializer, SupplySerial
 from ..models import Products
 
 
-class ProductsApi(ModelViewSet):
+class ProductsApi(LoginRequiredMixin,ModelViewSet):
     serializer_class = ProductsSerializer
     queryset = Products.objects.all()
+    login_url = reverse_lazy('user_app:login')
+
 
     def get_queryset(self):
         queryset = self.queryset
@@ -32,7 +37,11 @@ class ProductsApi(ModelViewSet):
         return queryset
 
 
-class ProductUpdateView(APIView):
+class ProductUpdateView(LoginRequiredMixin,APIView):
+
+    login_url = reverse_lazy('user_app:login')
+
+
     def put(self, request):
         product_data = request.data
         producto = Products.objects.get(code=product_data['code'])
@@ -65,16 +74,20 @@ class ProductUpdateView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class SupplyProduct(ModelViewSet):
+class SupplyProduct(LoginRequiredMixin,ModelViewSet):
     serializer_class = SupplySerializer
     queryset = Products.objects.all()
-    
+    login_url = reverse_lazy('user_app:login')
+
+@login_required(login_url='/')
 def ModalSupplyProduct(request):
     return render(request, 'products/supply_product.html')
 
+@login_required(login_url='/')
 def ModalAddProduct(request):
     return render(request, 'products/Form_add_product.html') 
 
+@login_required(login_url='/')
 def ModalInfoProduct(request):
     if request.method == 'GET':
         product_info_json = request.GET.get('product_info', None)
@@ -85,6 +98,7 @@ def ModalInfoProduct(request):
     }
     return render(request, 'products/DetailProduct.html', context)
 
+@login_required(login_url='/')
 def ModalDeleteProduct(request):
     product_code = request.GET.get('codigo')
     prod = Products.objects.get(code=product_code)
@@ -94,6 +108,7 @@ def ModalDeleteProduct(request):
     }
     return render(request, 'products/Delete_product.html', context)
 
+@login_required(login_url='/')
 def ModalUpdateProduct(request):
     product_info_json = request.GET.get('product_info', None)
     if product_info_json:
