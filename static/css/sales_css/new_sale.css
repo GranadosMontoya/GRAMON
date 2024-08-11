@@ -118,15 +118,6 @@ li.clicked {
     background-color: #DAF3E4;
 }
 
-@media (max-width: 576px) {
-    .container-fluid {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-}
-
 .searchproducts{
     width: 400px;
 }
@@ -249,4 +240,37 @@ li.clicked {
     display: flex;
     align-items: center;
 }
-    
+
+.delete_car {
+    padding: 10px 20px; /* Tamaño del botón */
+    border-width: 1px; /* Grosor del borde */
+    margin: 10px;
+}
+
+.number_items{
+    padding: 10px 20px; /* Tamaño del botón */
+    border-width: 2px; /* Grosor del borde */
+    margin: 10px;
+}
+
+#valor_final{
+    border-width: 2px; /* Grosor del borde */
+    margin: 10px;
+}
+
+
+@media (max-width: 750px) {
+    .delete_car {
+        font-size: 10px; /* Tamaño de texto */
+        padding: 10px 20px; /* Tamaño del botón */
+        border-width: 1px; /* Grosor del borde */
+        margin: 8px;
+    }
+
+    .number_items{
+        font-size: 14px; /* Tamaño de texto */
+        padding: 10px 20px; /* Tamaño del botón */
+        border-width: 2px; /* Grosor del borde */
+        margin: 8px;
+    }
+}
