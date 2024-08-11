@@ -199,7 +199,7 @@ li.clicked {
     width: 100%;
 }
 .invoice-details table, .invoice-details th, .invoice-details td {
-    border: 1px solid #000;
+    border: 0.5px dashed #000;
     border-collapse: collapse;
 }
 .invoice-details th, .invoice-details td {

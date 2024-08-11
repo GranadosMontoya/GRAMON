@@ -270,7 +270,6 @@ function sendsale(client, products, final_value, pay) {
                                   '</div>'+
                                   '<div class="invoice-details">'+
                                       '<p class="invoice-total">Subtotal: $'+info_venta.valor_final+'</p>'+
-                                      '<p class="invoice-total">Impuesto (IVA 16%): $-----</p>'+
                                       '<p class="invoice-total">Total: $'+info_venta.valor_final+'</</p>'+
                                       '<p class="invoice-total">Pago con: $'+info_venta.pay+'</</p>'+
                                       '<p class="invoice-total">Cambio: $'+info_venta.change+'</</p>'+
@@ -297,13 +296,38 @@ function sendsale(client, products, final_value, pay) {
 }
 
 function imprimirFactura(ventaId) {
-  var factura = document.getElementById('factura').innerHTML;
-  var impresora = window.open('', '', 'width=0,height=0');
-  impresora.document.write(factura);
-  impresora.document.title = 'Factura N°'+ventaId;
-  impresora.print();
-  impresora.close();
+  var factura = document.getElementById('factura');
+
+  // Usa html2canvas para capturar el contenido como una imagen
+  html2canvas(factura, { scale: 2 }).then(function(canvas) {
+      const { jsPDF } = window.jspdf;
+      var doc = new jsPDF('p', 'mm', 'a4');
+
+      // Convierte el canvas a una imagen en formato PNG
+      var imgData = canvas.toDataURL('image/png');
+
+      // Ancho y alto de la página en mm
+      var imgWidth = 210; // Ancho de la página A4 en mm
+      var pageHeight = 295; // Altura de la página A4 en mm
+      var imgHeight = canvas.height * imgWidth / canvas.width;
+      var heightLeft = imgHeight;
+
+      // Ajustar la altura para que el contenido se ajuste en una sola página
+      var scale = Math.min(imgWidth / canvas.width, pageHeight / canvas.height);
+      var newWidth = canvas.width * scale;
+      var newHeight = canvas.height * scale;
+
+      // Agregar la imagen al PDF
+      doc.addImage(imgData, 'PNG', 0, 0, imgWidth, newHeight); // Usar imgWidth para ajustar el ancho
+
+      // Definir el nombre del archivo por defecto
+      var nombreArchivo = 'Factura_N°' + ventaId + '.pdf';
+
+      // Guardar el archivo PDF con el nombre por defecto
+      doc.save(nombreArchivo);
+  });
 }
+
 
 $('.inputproducts').keypress(function(event) {
   if (event.which === 13) {
@@ -488,7 +512,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if (clientlengt) {
       $(this).prop('disabled', true);
       $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
-      setTimeout(function (){
         $.ajax({
           url: '/api/v1/search/customer/',
           method: 'GET',
@@ -519,7 +542,6 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log(error)
           }
         });
-      },3000);
     }else{
       alert('el campo no puede estar vacio')
     }
