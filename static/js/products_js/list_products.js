@@ -132,9 +132,9 @@ function initial_show_prodct(){
 
 document.addEventListener("DOMContentLoaded",function() {
 
-    (function() {
+    setTimeout(function() {
         $('#botom_search_producto').click();
-    });
+    }, 2000);
 
     $('#botom_search_producto').click(function () {
         const valor = $('#search_producto').val();
