@@ -1,5 +1,4 @@
 function SupplyProduct(datos) {
-  console.log(datos)
   $.ajax({
       url:'/api/v1/products/delete_update/',
       method: 'POST',

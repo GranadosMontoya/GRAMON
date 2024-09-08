@@ -5,7 +5,7 @@ from django.db import models
 from ..products_app.models import Products
 from ..adminusers_app.models import User
 from ..customers_app.models import Customer
-
+from apps.cash_register.models import Transaccion, Caja
 # Create your models here.
 
 
@@ -20,6 +20,10 @@ class Sales(models.Model):
 
     def __str__(self):
         return 'N° factura: ' + str(self.id)
+    
+    def save(self, *args, **kwargs):
+        # Guardar la venta
+        super(Sales, self).save(*args, **kwargs)
     
 class SaleProduct(models.Model):
     sale = models.ForeignKey(Sales, on_delete=models.CASCADE)

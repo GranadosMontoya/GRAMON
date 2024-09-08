@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 
 #import rest_framework
 from rest_framework.response import Response
@@ -27,12 +28,15 @@ class SalesView(LoginRequiredMixin,APIView):
     def post(self, request):
         data = request.data.copy()
         data['user'] = request.user.id
-        serializer = SalesSerializer(data=data)
-        if serializer.is_valid():
-            sale = serializer.save()
-            return Response({'factura': sale.id})
-        print(serializer.errors)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+        # Inicia una transacción atómica en la vista (opcional)
+        with transaction.atomic():
+            serializer = SalesSerializer(data=data)
+            if serializer.is_valid():
+                sale = serializer.save()
+                return Response({'factura': sale.id})
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def get(self, request):
         venta_id = request.GET.get('search')

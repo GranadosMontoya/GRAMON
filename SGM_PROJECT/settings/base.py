@@ -29,7 +29,9 @@ LOCAL_APPS = (
     'apps.products_app',
     'apps.customers_app',
     'apps.sales_app',
-    'apps.dashboard_products'
+    'apps.dashboard_products',
+    'apps.Departures',
+    'apps.cash_register'
 )
 
 THIR_APPS = (

@@ -3,6 +3,7 @@ const productListDiv = document.querySelector('.table_list_products');
 function showproducts(contenedor,respuesta){
     var tarjet = "";
     respuesta.forEach(function(product) {
+        console.log(product)
         tarjet+='<section class="card m-2 list_producto" aria-hidden="true">'+
                     '<div>'+
                         '<img class="list_image" src="'+product.image+'" alt="image.jpg">'+
@@ -131,9 +132,9 @@ function initial_show_prodct(){
 
 document.addEventListener("DOMContentLoaded",function() {
 
-    setTimeout(function() {
+    (function() {
         $('#botom_search_producto').click();
-    }, 2000);
+    });
 
     $('#botom_search_producto').click(function () {
         const valor = $('#search_producto').val();
