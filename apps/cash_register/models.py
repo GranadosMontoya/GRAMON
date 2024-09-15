@@ -21,7 +21,7 @@ class Caja(models.Model):
     @classmethod
     def get_caja_abierta(cls):
         try:
-            return cls.objects.get(estado='abierta')
+            return cls.objects.get(estado='Abierta')
         except cls.DoesNotExist:
             return None  # No hay una caja abierta
 
