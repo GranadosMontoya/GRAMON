@@ -123,4 +123,5 @@ font-size: xx-large;
 .icon_principal{
     border: 1px solid rgba(136, 136, 136, 0.5);
     padding-left: 5px;
+    margin-left: 10px;
 }

@@ -1,0 +1,13 @@
+{% load static %}
+<div class="modal-header">
+    <h4>Cierre de caja</h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form id="mi_formulario_cierre_caja">
+    <label for="input_cash_register"> 
+        <img class="image_cash_register" src="{% static 'img\box\caja-registradora.png' %}" alt="cash_register.jpg" id="image_cash_register">
+    </label>
+    <input type="number" class="addproduct_input" name="monto_real" id="monto_real" placeholder="Monto real" required>
+    <p id="alert_digit">Nota: En el campo "Monto real", sólo se permiten maximo 10 caracteres</p>
+    <button type="submit" class="addproduct_boton addproduct_input" value="Crear producto">Crear Producto</button>
+</form>

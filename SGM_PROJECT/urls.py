@@ -33,4 +33,6 @@ urlpatterns = [
     re_path('',include('apps.dashboard_products.urls')),
     re_path('',include('apps.dashboard_products.api.router')),
     re_path('',include('apps.Departures.api.router')),
+    re_path('',include('apps.cash_register.urls')),
+    re_path('',include('apps.cash_register.api.router')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 

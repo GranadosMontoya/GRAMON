@@ -11,7 +11,12 @@ class Caja(models.Model):
     saldo_inicial = models.DecimalField(max_digits=10, decimal_places=2)
     saldo_final = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     fecha_cierre = models.DateTimeField(null=True, blank=True)
-    estado = models.CharField(max_length=10, choices=[('abierta', 'Abierta'), ('cerrada', 'Cerrada')], default='abierta')
+    estado = models.CharField(max_length=10, choices=[('Abierta', 'Abierta'), ('Cerrada', 'Cerrada')], default='Abierta')
+
+    @staticmethod
+    def caja_abierta_existe():
+        """Verifica si ya existe una caja abierta"""
+        return Caja.objects.filter(estado='Abierta').exists()
 
     @classmethod
     def get_caja_abierta(cls):
@@ -20,37 +25,6 @@ class Caja(models.Model):
         except cls.DoesNotExist:
             return None  # No hay una caja abierta
 
-    def cerrar_caja(self):
-        # Verificar si la caja ya está cerrada
-        if self.estado == 'cerrada':
-            raise ValueError("Esta caja ya está cerrada.")
-
-        # Obtener todas las transacciones relacionadas con esta caja
-        transacciones = self.transacciones.all()
-
-        # Calcular el total de entradas y salidas
-        total_entradas = transacciones.filter(tipo='entrada').aggregate(Sum('monto'))['monto__sum'] or 0
-        total_salidas = transacciones.filter(tipo='salida').aggregate(Sum('monto'))['monto__sum'] or 0
-
-        # Calcular el saldo final
-        self.saldo_final = self.saldo_inicial + total_entradas - total_salidas
-
-        # Marcar la fecha y hora del cierre
-        self.fecha_cierre = timezone.now()
-
-        # Cambiar el estado de la caja a 'cerrada'
-        self.estado = 'cerrada'
-
-        # Guardar la caja con los nuevos valores
-        self.save()
-
-        return {
-            'saldo_inicial': self.saldo_inicial,
-            'total_entradas': total_entradas,
-            'total_salidas': total_salidas,
-            'saldo_final': self.saldo_final
-        }
-    
     def save(self, *args, **kwargs):
         # Generar el identificador si no está definido
         if not self.id:

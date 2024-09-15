@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.utils import timezone
 from ..models import Departures
 from apps.cash_register.models import Caja, Transaccion
 
