@@ -287,8 +287,8 @@ function sendsale(client, products, final_value, pay) {
       error: function (error) {
         document.getElementById('mensaje_error').innerHTML = 'Ha ocurrido un error al intentar registrar la venta';
         $('#errorModal').modal('show');
-        $('#client').val(emptyHtml);
-        $('#pay').val(emptyHtml);
+        $('#client').val('');
+        $('#pay').val('');
         console.log(error)
       }
   });
