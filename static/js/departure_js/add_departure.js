@@ -1,4 +1,4 @@
-function AddDeparture(datos) {
+function  AddDeparture(datos) {
     $.ajax({
         url:'/api/departures/',
         method: 'POST',
@@ -14,10 +14,11 @@ function AddDeparture(datos) {
             toast.show()
             close_modal()
             $('#botom_search_departure').click();
+            formularioEnviado = false;
           },
           error: function (xhr, status, error) {
             console.error('Error al registrar la salida', error);
-            console.log(error)
+            console.log('Detalles del error:', xhr.responseText); // Esto mostrará el mensaje de error completo
           },
     });
 };

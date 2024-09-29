@@ -1,0 +1,17 @@
+{% load static %}
+<div>
+    <h4>Apertura de una nueva caja</h4>
+    <form id="add_box_form">
+        <input type="number" class="add_departure" name="add_box" id="add_box" placeholder="Valor base" required>
+        <button type="button" class="btn btn-success box_send" value="Abrir caja" onclick="RedirigirNewSale()">Abrir caja</button>
+    </form>
+</div>
+
+
+<script>
+    function RedirigirNewSale() {
+        setTimeout(function() {
+            window.location.href = "{% url 'new_sale' %}";// Cambia esto por la URL de la vista
+        }, 2000); // Espera 2 segundos antes de redirigir
+    }
+</script>

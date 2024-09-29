@@ -25,5 +25,13 @@ def ModalAddBox(request):
     return render(request, 'box/new_box.html')
 
 @login_required(login_url='/')
+def ModalAddBox2(request):
+    # Verificar si ya existe una caja abierta
+    if Caja.caja_abierta_existe():
+        return render(request,'box/error_box.html')  # Redirigir a la página adecuada
+    # Si no hay una caja abierta, renderizar el formulario para abrir una nueva caja
+    return render(request, 'box/new_box2.html')
+
+@login_required(login_url='/')
 def CloseBox(request):
     return render(request, 'box/close_box.html') 

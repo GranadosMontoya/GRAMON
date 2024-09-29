@@ -285,7 +285,7 @@ function sendsale(client, products, final_value, pay) {
         });
       },
       error: function (error) {
-        document.getElementById('mensaje_error').innerHTML = 'Ha ocurrido un error al intentar registrar la venta';
+        document.getElementById('mensaje_error').innerHTML = 'Ha ocurrido un error al intentar registrar la venta, puede tratars de que aún no existe una caja abierta';
         $('#errorModal').modal('show');
         $('#client').val('');
         $('#pay').val('');

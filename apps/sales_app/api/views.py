@@ -18,6 +18,7 @@ from rest_framework.viewsets import ModelViewSet
 from .seralizer import SalesSerializer, SalesHistorySales
 from ..models import Sales, SaleProduct
 from .paginated import MediumPagination
+from apps.cash_register.models import Caja
 
 
 class SalesView(LoginRequiredMixin,APIView):
@@ -36,7 +37,7 @@ class SalesView(LoginRequiredMixin,APIView):
                 sale = serializer.save()
                 return Response({'factura': sale.id})
             print(serializer.errors)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_424_FAILED_DEPENDENCY)
     
     def get(self, request):
         venta_id = request.GET.get('search')
@@ -81,4 +82,7 @@ class SalesApi(LoginRequiredMixin,ModelViewSet):
     
 @login_required(login_url='/')
 def new_sale(request):
+    caja_abierta = Caja.get_caja_abierta()  # Método que devuelve la caja abierta
+    if not caja_abierta:
+        return render(request, "sales/Error_de_caja_sale.html")
     return render(request, 'sales/new_sale.html')

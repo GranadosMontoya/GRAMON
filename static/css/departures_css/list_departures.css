@@ -46,3 +46,87 @@
 #impimir_factura{
     margin-top: 10px;
 }
+
+
+
+
+
+/* ----------------------------------------------------- */
+
+.invoice {
+    border: 1px solid #ddd;
+    padding: 20px;
+    max-width: 400px;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.invoice h2 {
+    text-align: center;
+    color: #333;
+}
+
+.invoice-details {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.invoice-details li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.invoice-details li:last-child {
+    border-bottom: none;
+}
+
+.departure_user {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.btn-print {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #03A64A;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.btn-print:hover {
+    background-color: #029A40;
+}
+
+/* ------------------------------------- */
+
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+        font-size: 10px; /* Ajusta el tamaño de la fuente para la impresión */
+    }
+    .table-responsive {
+        width: 6cm; /* Ancho de impresión */
+        height: auto; /* Alto automático */
+    }
+    .table {
+        width: 100%; /* Asegura que la tabla use el ancho completo del contenedor */
+        border-collapse: collapse; /* Elimina los espacios entre las celdas */
+    }
+    th, td {
+        border: 1px solid #000; /* Agrega bordes a las celdas */
+        padding: 3px; /* Espaciado interno */
+        text-align: center; /* Centra el texto */
+    }
+    th {
+        background-color: #f8f9fa; /* Color de fondo para los encabezados */
+    }
+}

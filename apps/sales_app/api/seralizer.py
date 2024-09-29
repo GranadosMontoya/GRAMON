@@ -56,7 +56,7 @@ class SalesSerializer(serializers.ModelSerializer):
                 # Registrar la transacción en la caja abierta
                 caja_abierta = Caja.get_caja_abierta()  # Método que devuelve la caja abierta
                 if not caja_abierta:
-                    raise ValidationError("No se puede registrar una venta sin una caja abierta.")
+                    raise serializers.ValidationError("No se puede registrar una venta sin una caja abierta.")  # Lanza un error de validación
 
                 Transaccion.objects.create(
                     caja=caja_abierta,

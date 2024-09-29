@@ -9,4 +9,5 @@ router.register('api/departures', DeparturesApi, basename="departures_api")
 
 urlpatterns = [
     path('', include(router.urls)),
+    re_path('api/v1/departure/', DeparturesView.as_view(), name='departure-api'),
 ]

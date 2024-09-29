@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <title>Error</title>
+    <link rel="stylesheet" href="{% static 'css/sales_css/error_caja_sale.css' %}">
+
+{% endblock head %}
+
+
+{% block content %}
+    <div id="div_load" class="container">
+        <div class="content-box">
+            <img src="{% static 'img/logo-gramon.png' %}" alt="Logo Gramon" id="loadingImage">
+            <h1 id="texto_error_de_apertura">Aún no has abierto una caja registradora.</h1>
+            <p id="mensaje_adicional">Por favor, abre una caja y regresa para continuar con las ventas.</p>
+            <button id="modal_apertura_caja2" class="volver_btn">Abrir caja</button>
+        </div>
+    </div>
+{% endblock content %}
+
+    

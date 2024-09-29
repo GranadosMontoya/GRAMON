@@ -41,11 +41,11 @@ $(document).on('click', '#modal_apertura_caja', function () {
 $(document).on('click', '.box_send', function() {
     if (!formularioEnviado) {
         formularioEnviado = true;
-      var FormUpdate = {
-          'saldo_inicial' : $("#add_box").val(),
-      }
-      document.getElementById("add_box_form").reset();
-      AddBox(FormUpdate)
+        var FormUpdate = {
+            'saldo_inicial' : $("#add_box").val(),
+        }
+        document.getElementById("add_box_form").reset();
+        AddBox(FormUpdate)
     }
 });
 
@@ -70,6 +70,7 @@ $('.modal_close_box').click(function () {
                     success: function (data) {
                     call_modal(data)
                     $(document).ready(function() {
+                        formularioEnviado = false;  
                         $("#mi_formulario_cierre_caja").submit(function(event) {
                             $('.addproduct_boton').prop('disabled', true);    
                             $('.addproduct_boton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
@@ -108,4 +109,20 @@ $('.modal_close_box').click(function () {
             console.log(error)
         },
     });
+});
+
+
+$(document).on('click', '#modal_apertura_caja2', function () {
+    if (!formularioEnviado) {
+        $.ajax({
+            url: '/add/box2/',
+            success: function (data) {
+                call_modal(data);
+                formularioEnviado = false; 
+            },
+            error: function (error) {
+                alert('Algo salió mal');
+            }
+        });
+    }
 });

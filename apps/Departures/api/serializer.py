@@ -27,3 +27,15 @@ class DeparturesSerializer(serializers.ModelSerializer):
         )
 
         return departure
+
+
+class DeparturesSerializer2(serializers.ModelSerializer):
+    user_full_name = serializers.SerializerMethodField()
+    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+    class Meta:
+        model = Departures
+        fields = ['id', 'name', 'exit_price', 'created_at', 'user', 'user_full_name']
+
+    def get_user_full_name(self, obj):
+        return f"{obj.user.first_name} {obj.user.last_name}" if obj.user else "Sin nombre"
+

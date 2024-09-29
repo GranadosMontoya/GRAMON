@@ -1,0 +1,46 @@
+@media print {
+    @page {
+        size: 6cm auto; /* Ancho fijo, altura ajustable */
+        margin: 0;  /* Márgenes eliminados */
+    }
+
+    body {
+        width: 6cm; /* Ancho fijo */
+        margin: 0; /* Elimina márgenes */
+        padding: 0; /* Elimina padding */
+        background-image: url('/static/img/Logo.png'); /* Ruta a tu imagen de fondo */
+        background-size: cover; /* Asegura que la imagen cubra todo el fondo */
+        background-position: center; /* Centra la imagen */
+        background-repeat: no-repeat; /* Evita que la imagen se repita */
+        position: relative; /* Necesario para el pseudo-elemento */
+    }
+
+    /* Para crear un efecto de translucidez */
+    body::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.5); /* Color blanco con opacidad */
+        z-index: 1; /* Asegura que el overlay esté por encima de la imagen de fondo */
+    }
+
+    table {
+        width: 100%; /* Asegúrate de que la tabla ocupe todo el ancho disponible */
+        border-collapse: collapse; /* Colapsa los bordes de la tabla */
+        z-index: 2; /* Asegúrate de que la tabla esté por encima del overlay */
+        position: relative; /* Necesario para el z-index */
+    }
+
+    th, td {
+        border: 1px solid #000; /* Borde de celdas */
+        padding: 5px; /* Espaciado interno */
+        text-align: left; /* Alineación del texto */
+        font-size: 12px; /* Tamaño de fuente */
+        color: green; /* Color de texto */
+        position: relative; /* Necesario para el z-index */
+        z-index: 2; /* Asegúrate de que el texto esté por encima del overlay */
+    }
+}

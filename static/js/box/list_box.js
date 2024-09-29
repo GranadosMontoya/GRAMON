@@ -19,22 +19,13 @@ function showSales(contenedor,respuesta){
 }
 
 function imprimirFactura(ventaId) {
-    var factura = document.getElementById('factura').innerHTML; // Obtiene el HTML de la factura
-    var impresora = window.open('', '', 'width=600,height=800'); // Abre una nueva ventana
-    impresora.document.write('<html><head><title>Factura N° ' + ventaId + '</title>');
-    
-    // Agrega la referencia al CSS
-    impresora.document.write('<link rel="stylesheet" href="/static/css/sales_css/print_sale.css" type="text/css" />');
-    impresora.document.write('</head><body>');
+    var factura = document.getElementById('factura').innerHTML;
+    var impresora = window.open('', '', 'width=0,height=0');
     impresora.document.write(factura);
-    impresora.document.write('</body></html>');
-    impresora.document.close();
+    impresora.document.title = 'Factura N°'+ventaId;
     impresora.print();
+    impresora.close();
 }
-
-
- 
-
 
 
 $(document).ready(function() {
