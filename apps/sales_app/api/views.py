@@ -86,3 +86,7 @@ def new_sale(request):
     if not caja_abierta:
         return render(request, "sales/Error_de_caja_sale.html")
     return render(request, 'sales/new_sale.html')
+
+@login_required(login_url='/')
+def factura_sale(request):
+    return render(request, 'sales/factura_sale.html')

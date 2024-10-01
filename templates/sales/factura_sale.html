@@ -1,0 +1,147 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura</title>
+    <style>
+        body {
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    color: #333;
+}
+
+.invoice-box {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #eee;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    font-size: 16px;
+    line-height: 24px;
+    color: #555;
+    background-color: #f9f9f9;
+}
+
+.invoice-box table {
+    width: 100%;
+    line-height: inherit;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+.invoice-box table td {
+    padding: 8px;
+    vertical-align: top;
+}
+
+.invoice-box table tr td:nth-child(2) {
+    text-align: right;
+}
+
+.invoice-box table tr.top table td {
+    padding-bottom: 20px;
+}
+
+.invoice-box table tr.information table td {
+    padding-bottom: 20px;
+}
+
+.invoice-box table tr.heading td {
+    background-color: #03A64A; /* Verde */
+    color: white;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+}
+
+.invoice-box table tr.item td {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.invoice-box table tr.total td:nth-child(2) {
+    border-top: 2px solid #03A64A;
+    font-weight: bold;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 14px;
+    color: #666;
+}
+
+@media print {
+    body, .invoice-box {
+        width: 80mm; /* Ajusta el ancho para impresión en formato de ticket */
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="invoice-box">
+        <table cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td class="title">
+                                <img src="logo.png" alt="Logo Empresa" style="width:100px; max-width:100px;">
+                            </td>
+                            <td>
+                                Factura #: 12345<br>
+                                Creada: 1 Septiembre 2024<br>
+                                Vence: 8 Septiembre 2024
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="information">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td>
+                                Empresa Ejemplo S.A.<br>
+                                Calle 123<br>
+                                Medellín, Colombia
+                            </td>
+                            <td>
+                                Cliente:<br>
+                                John Doe<br>
+                                john@example.com
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="heading">
+                <td>Descripción</td>
+                <td>Precio</td>
+            </tr>
+            <tr class="item">
+                <td>Producto 1</td>
+                <td>$300.00</td>
+            </tr>
+            <tr class="item">
+                <td>Producto 2</td>
+                <td>$150.00</td>
+            </tr>
+            <tr class="item">
+                <td>Servicio</td>
+                <td>$75.00</td>
+            </tr>
+            <tr class="total">
+                <td></td>
+                <td>Total: $525.00</td>
+            </tr>
+        </table>
+        <div class="footer">
+            Gracias por su compra!
+        </div>
+    </div>
+</body>
+</html>

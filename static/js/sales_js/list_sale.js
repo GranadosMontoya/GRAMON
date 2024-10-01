@@ -18,24 +18,39 @@ function showSales(contenedor,respuesta){
     contenedor.innerHTML = tarjet;
 }
 
-function imprimirFactura(ventaId) {
-    var factura = document.getElementById('factura').innerHTML; // Obtiene el HTML de la factura
-    var impresora = window.open('', '', 'width=600,height=800'); // Abre una nueva ventana
-    impresora.document.write('<html><head><title>Factura N° ' + ventaId + '</title>');
-    
-    // Agrega la referencia al CSS
-    impresora.document.write('<link rel="stylesheet" href="/static/css/sales_css/print_sale.css" type="text/css" />');
-    impresora.document.write('</head><body>');
-    impresora.document.write(factura);
-    impresora.document.write('</body></html>');
-    impresora.document.close();
-    impresora.print();
+function imprimirFactura() {
+    $.ajax({
+        url: '/factura/sale/', // URL del endpoint que devuelve el HTML de la factura
+        method: 'GET',
+        success: function(data) {
+            // Crea un iframe invisible
+            var iframe = document.createElement('iframe');
+            iframe.style.position = 'absolute';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = 'none';
+
+            // Agrega el iframe al documento
+            document.body.appendChild(iframe);
+
+            // Obtén el documento dentro del iframe
+            var doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write(data); // Escribe directamente el HTML de la factura recibido
+            doc.close();
+
+            // Espera a que el contenido esté completamente cargado y listo para imprimir
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+
+            // Elimina el iframe después de la impresión
+            document.body.removeChild(iframe);
+        },
+        error: function(error) {
+            console.error("Error al obtener la factura:", error);
+        }
+    });
 }
-
-
- 
-
-
 
 $(document).ready(function() {
     $(document).on('click', '.visualizer', function() {
