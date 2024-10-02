@@ -18,10 +18,12 @@ function showSales(contenedor,respuesta){
     contenedor.innerHTML = tarjet;
 }
 
-function imprimirFactura() {
+function imprimirFactura(diccionario) {
+    
     $.ajax({
         url: '/factura/sale/', // URL del endpoint que devuelve el HTML de la factura
         method: 'GET',
+        data: { factura_sale: JSON.stringify(diccionario) }, // Serializa el diccionario como una cadena JSON
         success: function(data) {
             // Crea un iframe invisible
             var iframe = document.createElement('iframe');
@@ -62,6 +64,11 @@ $(document).ready(function() {
             success: function(data){
                 var productos = data.productos;
                 var info_venta = data.info_venta
+
+                var diccionario = {
+                    productos: productos, // Asigna la variable 'productos' al diccionario
+                    info_venta: info_venta // Asigna la variable 'info_venta' al diccionario
+                };
 
                 var tablaHtml = '';
                 for (var i = 0; i < productos.length; i++) {
@@ -122,11 +129,14 @@ $(document).ready(function() {
                                 '</div>'+
                                 '<div class="invoice-details-botons">'+
                                     '<button class="btn btn-danger  mx-1" disabled>Eliminar</button>'+
-                                    '<button class="btn btn-success mx-3" onclick="imprimirFactura('+info_venta.id+')">Imprimir</button>'+
+                                    '<button class="btn btn-success mx-3" id="btn-imprimir">Imprimir</button>'+
                                 '</div>';
                 setTimeout(function() {
                     call_modal(modalHtml)
-                }, 300);
+                    document.getElementById('btn-imprimir').addEventListener('click', function() {
+                        imprimirFactura(diccionario);
+                    });
+                }, 200);
             }
         });
     });

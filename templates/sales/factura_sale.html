@@ -1,4 +1,4 @@
-{% load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,140 +7,154 @@
     <title>Factura</title>
     <style>
         body {
-    font-family: 'Arial', sans-serif;
-    font-size: 16px;
-    color: #333;
-}
+            font-family: 'Arial', sans-serif;
+            font-size: 16px;
+            color: #333;
+        }
 
-.invoice-box {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #eee;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-    font-size: 16px;
-    line-height: 24px;
-    color: #555;
-    background-color: #f9f9f9;
-}
+        .invoice-box {
+            max-width: 800px;  /* Ampliado el ancho */
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            font-size: 16px;
+            line-height: 24px;
+            color: #555;
+            background-color: #f9f9f9;
+        }
 
-.invoice-box table {
-    width: 100%;
-    line-height: inherit;
-    text-align: left;
-    border-collapse: collapse;
-}
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+            border-collapse: collapse;
+        }
 
-.invoice-box table td {
-    padding: 8px;
-    vertical-align: top;
-}
+        .invoice-box table td {
+            padding: 8px;
+            vertical-align: top;
+        }
 
-.invoice-box table tr td:nth-child(2) {
-    text-align: right;
-}
+        .invoice-box table tr td:nth-child(2) {
+            text-align: right;
+        }
 
-.invoice-box table tr.top table td {
-    padding-bottom: 20px;
-}
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
 
-.invoice-box table tr.information table td {
-    padding-bottom: 20px;
-}
+        .invoice-box table tr.information table td {
+            padding-bottom: 20px;
+        }
 
-.invoice-box table tr.heading td {
-    background-color: #03A64A; /* Verde */
-    color: white;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    font-weight: bold;
-}
+        .invoice-box table tr.heading td {
+            background-color: #03A64A; /* Verde */
+            color: white;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
 
-.invoice-box table tr.item td {
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-}
+        .invoice-box table tr.item td {
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
 
-.invoice-box table tr.total td:nth-child(2) {
-    border-top: 2px solid #03A64A;
-    font-weight: bold;
-}
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #03A64A;
+            font-weight: bold;
+        }
 
-.footer {
-    text-align: center;
-    margin-top: 30px;
-    font-size: 14px;
-    color: #666;
-}
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666;
+        }
 
-@media print {
-    body, .invoice-box {
-        width: 80mm; /* Ajusta el ancho para impresión en formato de ticket */
-    }
-}
+        @media print {
+            body, .invoice-box {
+                width: 120mm; /* Ajusta el ancho para impresión en formato de ticket */
+            }
 
+            img {
+                display: none;
+            }
+
+            img {
+                max-width: 100%; /* Asegúrate de que las imágenes no se corten */
+                height: auto;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="invoice-box">
         <table cellpadding="0" cellspacing="0">
             <tr class="top">
-                <td colspan="2">
+                <td colspan="4">
                     <table>
                         <tr>
-                            <td class="title">
-                                <img src="logo.png" alt="Logo Empresa" style="width:100px; max-width:100px;">
-                            </td>
-                            <td>
-                                Factura #: 12345<br>
-                                Creada: 1 Septiembre 2024<br>
-                                Vence: 8 Septiembre 2024
+                            <!-- <td class="title"> <!-- Alineación a la izquierda -->
+                                <!-- <img src="{% static 'img/Fondo-Movil.png' %}" alt="Logo Empresa" style="width:100px; max-width:100px;">
+                            </td> -->
+                            <td style="text-align: right;"> <!-- Alineación a la derecha -->
+                                Factura #: {{ info_venta.id }}<br>
+                                Creada: {{ info_venta.created_at }}<br>
                             </td>
                         </tr>
                     </table>
                 </td>
             </tr>
             <tr class="information">
-                <td colspan="2">
+                <td colspan="4">
                     <table>
                         <tr>
-                            <td>
-                                Empresa Ejemplo S.A.<br>
-                                Calle 123<br>
-                                Medellín, Colombia
+                            <td style="text-align: left;"> <!-- Justificación del texto -->
+                                TIENDA AQUI ME QUEDO<br>
+                                CALLE X # X - X<br>
+                                {{ info_venta.empresa_ciudad }}
                             </td>
-                            <td>
-                                Cliente:<br>
-                                John Doe<br>
-                                john@example.com
+                            <td style="text-align: right;"> <!-- Justificación del texto -->
+                                Cliente: {{ info_venta.client_full_name }}<br>
+                                Cajero: {{ info_venta.user_full_name }}<br>
                             </td>
                         </tr>
                     </table>
                 </td>
             </tr>
             <tr class="heading">
-                <td>Descripción</td>
+                <td>Producto</td>
+                <td>Cantidad</td>
+                <td>Precio C/U</td>
                 <td>Precio</td>
             </tr>
+
+            {% for producto in productos %}
             <tr class="item">
-                <td>Producto 1</td>
-                <td>$300.00</td>
+                <td>{{ producto.name }}</td>
+                <td>{{ producto.cantidad }}</td>
+                <td>${{ producto.precio_unitario }}</td>
+                <td>${{ producto.valor_total }}</td>
             </tr>
-            <tr class="item">
-                <td>Producto 2</td>
-                <td>$150.00</td>
-            </tr>
-            <tr class="item">
-                <td>Servicio</td>
-                <td>$75.00</td>
-            </tr>
+            {% endfor %}
             <tr class="total">
                 <td></td>
-                <td>Total: $525.00</td>
+                <td style="text-align: center;">Total: ${{ info_venta.valor_final }}</td>
             </tr>
+            <tr>
+                <td class="payment-label">Pago con:</td>
+                <td class="payment-amount">${{ info_venta.pay }}</td>
+            </tr>
+            <tr>
+                <td class="payment-label">Cambio:</td>
+                <td class="payment-amount">${{ info_venta.change }}</td>
+            </tr>
+            
         </table>
         <div class="footer">
-            Gracias por su compra!
+            ¡Gracias por su compra!
         </div>
     </div>
 </body>

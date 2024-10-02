@@ -22,10 +22,8 @@ from apps.cash_register.models import Caja
 
 
 class SalesView(LoginRequiredMixin,APIView):
-
     login_url = reverse_lazy('user_app:login')
 
-    
     def post(self, request):
         data = request.data.copy()
         data['user'] = request.user.id
@@ -87,6 +85,29 @@ def new_sale(request):
         return render(request, "sales/Error_de_caja_sale.html")
     return render(request, 'sales/new_sale.html')
 
+import json
+from django.http import JsonResponse
+
 @login_required(login_url='/')
 def factura_sale(request):
+    # Comprobar si los datos 'factura_sale' están en la solicitud GET
+    if request.method == 'GET' and 'factura_sale' in request.GET:
+        # Obtener los datos enviados como JSON y deserializarlos
+        factura_sale_json = request.GET.get('factura_sale')
+        factura_sale_data = json.loads(factura_sale_json)  # Deserializar JSON a diccionario
+
+        # Ahora tienes un diccionario con los datos de la venta
+        productos = factura_sale_data.get('productos')
+        info_venta = factura_sale_data.get('info_venta')
+
+        # Enviar productos e info_venta al contexto de la plantilla
+        context = {
+            'productos': productos,
+            'info_venta': info_venta
+        }
+
+        # Renderizar la plantilla con los datos de la factura
+        return render(request, 'sales/factura_sale.html', context)
+
+    # En caso de que no se reciban datos, renderizar la plantilla habitual vacía
     return render(request, 'sales/factura_sale.html')

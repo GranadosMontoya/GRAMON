@@ -280,6 +280,7 @@ function sendsale(client, products, final_value, pay) {
                               '</div>';
               setTimeout(function() {
                   call_modal(modalHtml)
+
               }, 300);
           }
         });

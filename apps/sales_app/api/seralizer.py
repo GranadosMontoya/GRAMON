@@ -33,6 +33,7 @@ class SalesSerializer(serializers.ModelSerializer):
             sale = Sales.objects.create(**validated_data)
 
             for product_data in list_products:
+                print('sebas')
                 code = product_data['code']
                 quantity = product_data['quantity']
                 unit_price = product_data['unit_price']
@@ -58,13 +59,13 @@ class SalesSerializer(serializers.ModelSerializer):
                 if not caja_abierta:
                     raise serializers.ValidationError("No se puede registrar una venta sin una caja abierta.")  # Lanza un error de validación
 
-                Transaccion.objects.create(
-                    caja=caja_abierta,
-                    tipo='entrada',
-                    monto=sale.valor_final,  # El monto total de la venta
-                    descripcion=f"Venta realizada por {validated_data['user']}"
-                )
-                return sale
+            Transaccion.objects.create(
+                caja=caja_abierta,
+                tipo='entrada',
+                monto=sale.valor_final,  # El monto total de la venta
+                descripcion=f"Venta realizada por {validated_data['user']}"
+            )
+            return sale
 
 class SalesHistorySales(serializers.ModelSerializer):
     client_full_name = serializers.CharField(source='client.full_name')
