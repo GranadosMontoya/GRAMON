@@ -10,18 +10,15 @@
             font-family: 'Arial', sans-serif;
             font-size: 16px;
             color: #333;
+            margin: 0; /* Elimina márgenes en el body */
         }
 
         .invoice-box {
-            max-width: 800px;  /* Ampliado el ancho */
+            max-width: 800px;  
             margin: auto;
-            padding: 20px;
-            border: 1px solid #eee;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            padding: 10px; /* Reduce el relleno */
             font-size: 16px;
             line-height: 24px;
-            color: #555;
-            background-color: #f9f9f9;
         }
 
         .invoice-box table {
@@ -32,7 +29,7 @@
         }
 
         .invoice-box table td {
-            padding: 8px;
+            padding: 5px; /* Reduce el padding */
             vertical-align: top;
         }
 
@@ -62,6 +59,7 @@
         }
 
         .invoice-box table tr.total td:nth-child(2) {
+            text-align: right;
             border-top: 2px solid #03A64A;
             font-weight: bold;
         }
@@ -74,15 +72,19 @@
         }
 
         @media print {
+            @page {
+                size: 150mm auto; /* Tamaño personalizado */
+                page-break-inside: avoid; /* Evita que el contenido se divida entre páginas */
+            }
             body, .invoice-box {
-                width: 120mm; /* Ajusta el ancho para impresión en formato de ticket */
+                width: 150mm; /* Ajusta el ancho para impresión en formato de ticket */
+                height: auto; /* Permite que la altura se ajuste automáticamente */
+                margin: 0;
+                padding: 0;
             }
 
             img {
-                display: none;
-            }
-
-            img {
+                display: block;
                 max-width: 100%; /* Asegúrate de que las imágenes no se corten */
                 height: auto;
             }
@@ -96,12 +98,9 @@
                 <td colspan="4">
                     <table>
                         <tr>
-                            <!-- <td class="title"> <!-- Alineación a la izquierda -->
-                                <!-- <img src="{% static 'img/Fondo-Movil.png' %}" alt="Logo Empresa" style="width:100px; max-width:100px;">
-                            </td> -->
                             <td style="text-align: right;"> <!-- Alineación a la derecha -->
                                 Factura #: {{ info_venta.id }}<br>
-                                Creada: {{ info_venta.created_at }}<br>
+                                Fecha y hora: {{ info_venta.created_at }}<br>
                             </td>
                         </tr>
                     </table>
@@ -125,31 +124,31 @@
                 </td>
             </tr>
             <tr class="heading">
-                <td>Producto</td>
-                <td>Cantidad</td>
-                <td>Precio C/U</td>
-                <td>Precio</td>
+                <td style="text-align: center;">Producto</td>
+                <td style="text-align: center;">Cantidad</td>
+                <td style="text-align: center;">Precio C/U</td>
+                <td style="text-align: center;">Precio</td>
             </tr>
 
             {% for producto in productos %}
             <tr class="item">
                 <td>{{ producto.name }}</td>
-                <td>{{ producto.cantidad }}</td>
-                <td>${{ producto.precio_unitario }}</td>
-                <td>${{ producto.valor_total }}</td>
+                <td  style="text-align: center;">{{ producto.cantidad }}</td>
+                <td  style="text-align: center;">${{ producto.precio_unitario }}</td>
+                <td  style="text-align: center;">${{ producto.valor_total }}</td>
             </tr>
             {% endfor %}
+            
             <tr class="total">
-                <td></td>
-                <td style="text-align: center;">Total: ${{ info_venta.valor_final }}</td>
+                <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
+                <td style="text-align: center; border-top: 2px solid #03A64A;">${{ info_venta.valor_final }}</td>
+            </tr>
+            
+            <tr>
+                <td colspan="4" class="payment-label" style="text-align: center;">Pago con: ${{ info_venta.pay }}</td>
             </tr>
             <tr>
-                <td class="payment-label">Pago con:</td>
-                <td class="payment-amount">${{ info_venta.pay }}</td>
-            </tr>
-            <tr>
-                <td class="payment-label">Cambio:</td>
-                <td class="payment-amount">${{ info_venta.change }}</td>
+                <td colspan="4" class="payment-label" style="text-align: center;">Cambio: ${{ info_venta.change }}</td>
             </tr>
             
         </table>

@@ -218,6 +218,12 @@ function sendsale(client, products, final_value, pay) {
           success: function(data){
               var productos = data.productos;
               var info_venta = data.info_venta
+
+              var diccionario = {
+                  productos: productos, // Asigna la variable 'productos' al diccionario
+                  info_venta: info_venta // Asigna la variable 'info_venta' al diccionario
+              };
+              
               var tablaHtml = '';
               for (var i = 0; i < productos.length; i++) {
                   var producto = productos[i];
@@ -276,11 +282,13 @@ function sendsale(client, products, final_value, pay) {
                                   '</div>'+
                               '</div>'+
                               '<div class="invoice-details-botons">'+
-                                  '<button class="btn btn-success mx-3" onclick="imprimirFactura('+info_venta.id+')">Imprimir</button>'+
+                                  '<button class="btn btn-success mx-3" id="btn-imprimir">Imprimir</button>'+
                               '</div>';
               setTimeout(function() {
                   call_modal(modalHtml)
-
+                  document.getElementById('btn-imprimir').addEventListener('click', function() {
+                    imprimirFactura(diccionario);
+                  });
               }, 300);
           }
         });
@@ -296,39 +304,41 @@ function sendsale(client, products, final_value, pay) {
   limpiarLocalStorage()
 }
 
-function imprimirFactura(ventaId) {
-  var factura = document.getElementById('factura');
+function imprimirFactura(diccionario) {
+    
+  $.ajax({
+      url: '/factura/sale/', // URL del endpoint que devuelve el HTML de la factura
+      method: 'GET',
+      data: { factura_sale: JSON.stringify(diccionario) }, // Serializa el diccionario como una cadena JSON
+      success: function(data) {
+          // Crea un iframe invisible
+          var iframe = document.createElement('iframe');
+          iframe.style.position = 'absolute';
+          iframe.style.width = '0';
+          iframe.style.height = '0';
+          iframe.style.border = 'none';
 
-  // Usa html2canvas para capturar el contenido como una imagen
-  html2canvas(factura, { scale: 2 }).then(function(canvas) {
-      const { jsPDF } = window.jspdf;
-      var doc = new jsPDF('p', 'mm', 'a4');
+          // Agrega el iframe al documento
+          document.body.appendChild(iframe);
 
-      // Convierte el canvas a una imagen en formato PNG
-      var imgData = canvas.toDataURL('image/png');
+          // Obtén el documento dentro del iframe
+          var doc = iframe.contentWindow.document;
+          doc.open();
+          doc.write(data); // Escribe directamente el HTML de la factura recibido
+          doc.close();
 
-      // Ancho y alto de la página en mm
-      var imgWidth = 210; // Ancho de la página A4 en mm
-      var pageHeight = 295; // Altura de la página A4 en mm
-      var imgHeight = canvas.height * imgWidth / canvas.width;
-      var heightLeft = imgHeight;
+          // Espera a que el contenido esté completamente cargado y listo para imprimir
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
 
-      // Ajustar la altura para que el contenido se ajuste en una sola página
-      var scale = Math.min(imgWidth / canvas.width, pageHeight / canvas.height);
-      var newWidth = canvas.width * scale;
-      var newHeight = canvas.height * scale;
-
-      // Agregar la imagen al PDF
-      doc.addImage(imgData, 'PNG', 0, 0, imgWidth, newHeight); // Usar imgWidth para ajustar el ancho
-
-      // Definir el nombre del archivo por defecto
-      var nombreArchivo = 'Factura_N°' + ventaId + '.pdf';
-
-      // Guardar el archivo PDF con el nombre por defecto
-      doc.save(nombreArchivo);
+          // Elimina el iframe después de la impresión
+          document.body.removeChild(iframe);
+      },
+      error: function(error) {
+          console.error("Error al obtener la factura:", error);
+      }
   });
 }
-
 
 $('.inputproducts').keypress(function(event) {
   if (event.which === 13) {
