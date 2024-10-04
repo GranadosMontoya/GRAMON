@@ -14,7 +14,6 @@ function  AddDeparture(datos) {
             toast.show()
             close_modal()
             $('#botom_search_departure').click();
-            formularioEnviado = false;
           },
           error: function (xhr, status, error) {
             console.error('Error al registrar la salida', error);
@@ -41,11 +40,10 @@ $(document).on('click', '#modal_add_departure', function () {
 
 $(document).on('click', '.departure_send', function() {
     if (!formularioEnviado) {
-        formularioEnviado = true;
-      var FormUpdate = {
-          'name' : $("#name_departure").val(),
-          'exit_price': $("#exit_price_departure").val(),
-      }
+        var FormUpdate = {
+            'name' : $("#name_departure").val(),
+            'exit_price': $("#exit_price_departure").val(),
+        }
       document.getElementById("add_departure_form").reset();
       AddDeparture(FormUpdate)
     }

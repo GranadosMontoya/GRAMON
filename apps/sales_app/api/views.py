@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
+import json
 
 #import rest_framework
 from rest_framework.response import Response
@@ -85,8 +86,7 @@ def new_sale(request):
         return render(request, "sales/Error_de_caja_sale.html")
     return render(request, 'sales/new_sale.html')
 
-import json
-from django.http import JsonResponse
+
 
 @login_required(login_url='/')
 def factura_sale(request):

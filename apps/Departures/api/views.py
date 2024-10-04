@@ -30,12 +30,6 @@ class DeparturesApi(LoginRequiredMixin, ModelViewSet):
             )
         return queryset
 
-
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-
 class DeparturesView(LoginRequiredMixin, APIView):
     def get(self, request):
         salida_id = request.GET.get('search')

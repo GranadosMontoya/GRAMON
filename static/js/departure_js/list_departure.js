@@ -16,13 +16,40 @@ function showSales(contenedor,respuesta){
     contenedor.innerHTML = tarjet;
 }
 
-function imprimirFactura(SalidaId) {
-    var salida = document.getElementById('Salida').innerHTML;
-    var impresora = window.open('', '', 'width=0,height=0');
-    impresora.document.write(salida);
-    impresora.document.title = 'Salida N°'+SalidaId;
-    impresora.print();
-    impresora.close();
+function imprimirSalida(diccionario) {
+    
+    $.ajax({
+        url: '/factura/salida/', // URL del endpoint que devuelve el HTML de la factura
+        method: 'GET',
+        data: { factura_salida: JSON.stringify(diccionario) }, // Serializa el diccionario como una cadena JSON
+        success: function(data) {
+            // Crea un iframe invisible
+            var iframe = document.createElement('iframe');
+            iframe.style.position = 'absolute';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = 'none';
+
+            // Agrega el iframe al documento
+            document.body.appendChild(iframe);
+
+            // Obtén el documento dentro del iframe
+            var doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write(data); // Escribe directamente el HTML de la factura recibido
+            doc.close();
+
+            // Espera a que el contenido esté completamente cargado y listo para imprimir
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+
+            // Elimina el iframe después de la impresión
+            document.body.removeChild(iframe);
+        },
+        error: function(error) {
+            console.error("Error al obtener la impresion:", error);
+        }
+    });
 }
 
 
@@ -34,6 +61,11 @@ $(document).ready(function() {
             method : 'GET',
             data : {search : SalidaId},
             success: function(data){
+
+                var diccionario ={
+                    data_salida : data
+                };
+
                 var modalHtml = '<div class="invoice" id="Salida">'+
                                     '<h2>Factura de Salida</h2>'+
                                     '<ul class="invoice-details">'+
@@ -45,9 +77,12 @@ $(document).ready(function() {
                                     '<div class="departure_user">'+
                                         '<strong>Usuario:</strong> <span id="user-price">'+data.info_salida.user_full_name+'</span>'+
                                     '</div>'+
-                                    '<button class="btn-print" onclick="imprimirFactura('+data.info_salida.id+')"">Imprimir Factura</button>'+
+                                    '<button class="btn-print" id="btn-imprimir">Imprimir Factura</button>'+
                                 '</div>';
                 call_modal(modalHtml)
+                document.getElementById('btn-imprimir').addEventListener('click', function() {
+                    imprimirSalida(diccionario);
+                });
             }
         });
     });
