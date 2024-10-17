@@ -1,0 +1,113 @@
+.visualizer{
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background: none;
+    color: inherit;
+    transition: transform 0.2s;
+}
+
+.visualizer:hover{
+    color: #0EB06D;
+    transform: scale(1.2);
+}
+
+.modal-content {
+    font-family: Arial, sans-serif;
+}
+.invoice-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.invoice-header {
+    text-align: center;
+}
+.invoice-details {
+    margin-top: 20px;
+}
+.invoice-details table {
+    width: 100%;
+}
+.invoice-details table, .invoice-details th, .invoice-details td {
+    border: 1px solid #000;
+    border-collapse: collapse;
+}
+.invoice-details th, .invoice-details td {
+    padding: 8px;
+    text-align: center;
+}
+.invoice-total {
+    font-weight: bold;
+}
+
+#impimir_factura{
+    margin-top: 10px;
+}
+
+
+/* 
+---------------------------- */
+.modal-content {
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+    font-size: 1.5rem;
+    color: #03A64A;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+hr {
+    border: 1px solid #03A64A;
+    width: 50%;
+    margin: 0 auto 15px;
+}
+
+.info-box {
+    background-color: #f8f9fa;
+    padding: 10px 15px;  /* Reduje el relleno (padding) */
+    border-radius: 8px;
+    border-left: 4px solid #03A64A;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    margin-bottom: 10px; /* Reduje el margen inferior */
+}
+
+.info-box h5 {
+    margin-bottom: 5px;
+    color: #6c757d;
+    font-size: 0.9rem; /* Texto ligeramente más pequeño */
+    font-weight: 500;
+}
+
+.info-box p {
+    margin: 0;
+    font-size: 1.1rem; /* Tamaño de fuente ligeramente reducido */
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+.text-primary {
+    color: #007bff !important;
+}
+
+.text-dark {
+    color: #343a40 !important;
+}
+
+.lead {
+    font-size: 1.15rem;
+    font-weight: 400;
+}
+
+.shadow-lg {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+}

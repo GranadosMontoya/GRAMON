@@ -1,22 +1,31 @@
 const productListDiv = document.querySelector('.showResults');
 
-function showSales(contenedor,respuesta){
+function showSales(contenedor, respuesta) {
     var tarjet = "";
-    console.log(respuesta.results)
-    respuesta.results.forEach(function(sale) {
-        tarjet+='<tr>'+
-                    '<th scope="row">#'+sale.id+'</th>'+
-                    '<td>'+sale.client_full_name+'</td>'+
-                    '<td>'+sale.user_full_name+'</td>'+
-                    '<td>$'+sale.valor_final+'</td>'+
-                    '<td>'+sale.created_at+'</td>'+
-                    '<td style="text-align: center;">'+
-                        '<i class="bi bi-eye visualizer" data-id="'+sale.id+'"></i>'+
-                    '</td>'+
-                ' </tr>';
+    console.log(respuesta);
+
+    // Asegúrate de que 'respuesta' sea un array
+    if (!Array.isArray(respuesta)) {
+        respuesta = [respuesta];  // Si no es un array, lo convierte en uno
+    }
+
+    respuesta.forEach(function (box) {
+        tarjet += '<tr>' +
+            '<th scope="row">#' + box.id + '</th>' +
+            '<td>' + box.fecha_apertura + '</td>' +
+            '<td>' + box.fecha_cierre + '</td>' +
+            '<td>$' + box.saldo_inicial + '</td>' +
+            '<td>$' + box.saldo_final + '</td>' +
+            '<td>' + box.estado + '</td>' +
+            '<td style="text-align: center;">' +
+                '<i class="bi bi-eye visualizer" data-id="' + box.id + '"></i>' +
+            '</td>' +
+            '</tr>';
     });
+
     contenedor.innerHTML = tarjet;
 }
+
 
 function imprimirFactura(ventaId) {
     var factura = document.getElementById('factura').innerHTML;
@@ -32,90 +41,76 @@ $(document).ready(function() {
     $(document).on('click', '.visualizer', function() {
         var ventaId = $(this).data('id');
         $.ajax({
-            url: '/api/v1/sales/',
+            url: '/api/v1/box/',
             method : 'GET',
             data : {search : ventaId},
-            success: function(data){
-                var productos = data.productos;
-                var info_venta = data.info_venta
+            success: function(data) {
+                console.log(data);
+                if (data.length > 0) {
+                    var caja = data[0]; // Acceder al primer objeto dentro del array
+                    // Crear el HTML del modal
+                    var modalHtml = `
+                            <h3 class="text-center mb-3 font-weight-bold text-uppercase">Informe de Caja</h3>
+                            <hr>
 
-                var tablaHtml = '';
-                for (var i = 0; i < productos.length; i++) {
-                    var producto = productos[i];
-                    var filaHtml = '<tr>' +
-                                        '<td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">'+
-                                            producto.name+
-                                        '</td>'+
-                                        '<td>' + producto.cantidad + '</td>' +
-                                        '<td>' + '$'+producto.precio_unitario + '</td>' +
-                                        '<td>' + '$'+ producto.valor_total + '</td>' +
-                                    '</tr>';
-                    tablaHtml += filaHtml;
+                            <div class="info-box bg-light p-2 rounded mb-2 shadow-sm">
+                                <h5 class="text-muted">ID de la Caja</h5>
+                                <p class="lead text-dark">${caja.id}</p>
+                            </div>
+
+                            <div class="info-box bg-light p-2 rounded mb-2 shadow-sm">
+                                <h5 class="text-muted">Fecha de Apertura</h5>
+                                <p class="text-dark">${caja.fecha_apertura}</p>
+                            </div>
+
+                            <div class="info-box bg-light p-2 rounded mb-2 shadow-sm">
+                                <h5 class="text-muted">Saldo Inicial</h5>
+                                <p class="text-success h5">$${caja.saldo_inicial}</p>
+                            </div>
+
+                            <div class="info-box bg-light p-2 rounded mb-2 shadow-sm">
+                                <h5 class="text-muted">Saldo Final</h5>
+                                <p class="text-primary h5">$${caja.saldo_final}</p>
+                            </div>
+
+                            <div class="info-box bg-light p-2 rounded mb-2 shadow-sm">
+                                <h5 class="text-muted">Valor de entradas</h5>
+                                <p class="lead text-dark">${caja.total_entradas}</p>
+                            </div>
+                            
+                            <div class="info-box bg-light p-2 rounded mb-2 shadow-sm">
+                                <h5 class="text-muted">Valor de salida</h5>
+                                <p class="lead text-dark">${caja.total_salidas}</p>
+                            </div>
+                            
+                            <div class="info-box bg-light p-2 rounded mb-2 shadow-sm">
+                                <h5 class="text-muted">Fecha de Cierre</h5>
+                                <p class="text-dark">${caja.fecha_cierre ? caja.fecha_cierre : 'No cerrada aún'}</p>
+                            </div>
+
+                            <div class="info-box bg-light p-2 rounded mb-2 shadow-sm">
+                                <h5 class="text-muted">Estado</h5>
+                                <p class="text-dark">${caja.estado}</p>
+                            </div>
+
+                    `;
+                    // Mostrar el modal
+                    call_modal(modalHtml);
                 }
-
-                var modalHtml = '<div id="factura" class="invoice-container">'+
-                                    '<div class="invoice-header">'+
-                                        '<h5>Factura N° '+info_venta.id+'</h5>'+
-                                    '</div>'+
-                                    '<div class="invoice-details">'+
-                                        '<table>'+
-                                            '<tr>'+
-                                                '<th>Fecha y hora de venta</th>'+
-                                                '<td>'+info_venta.created_at+'</td>'+
-                                            '</tr>'+
-                                            '<tr>'+
-                                                '<th>Cajero</th>'+
-                                                '<td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">'+info_venta.user_full_name+'</td>'+
-                                            '</tr>'+
-                                            '<tr>'+
-                                                '<th>Cliente</th>'+
-                                                '<td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">'+info_venta.client_full_name+'</td>'+
-                                            '</tr>'+
-                                        '</table>'+
-                                    '</div>'+
-                                    '<div class="invoice-details">'+
-                                        '<table>'+
-                                            '<thead>'+
-                                                '<tr>'+
-                                                    '<th>Producto</th>'+
-                                                    '<th>Cantidad</th>'+
-                                                    '<th>Precio Unitario</th>'+
-                                                    '<th>Total</th>'+
-                                            '</tr>'+
-                                            '</thead>'+
-                                            '<tbody>'+
-                                                tablaHtml+
-                                            '</tbody>'+
-                                        '</table>'+
-                                    '</div>'+
-                                    '<div class="invoice-details">'+
-                                        '<p class="invoice-total">Subtotal: $'+info_venta.valor_final+'</p>'+
-                                        '<p class="invoice-total">Impuesto (IVA 16%): $-----</p>'+
-                                        '<p class="invoice-total">Total: $'+info_venta.valor_final+'</</p>'+
-                                        '<p class="invoice-total">Pago con: $'+info_venta.pay+'</</p>'+
-                                        '<p class="invoice-total">Cambio: $'+info_venta.change+'</</p>'+
-                                    '</div>'+
-                                '</div>'+
-                                '<div class="invoice-details-botons">'+
-                                    '<button class="btn btn-danger  mx-1" disabled>Eliminar</button>'+
-                                    '<button class="btn btn-success mx-3" onclick="imprimirFactura('+info_venta.id+')">Imprimir</button>'+
-                                '</div>';
-                setTimeout(function() {
-                    call_modal(modalHtml)
-                }, 300);
-            }
+            }            
+                              
         });
     });
 
-    $('#botom_search_sale').click(function () {
-        const valor = $('#search_sale').val();
+    $('#botom_search_box').click(function () {
+        const valor = $('#search_box').val();
         $.ajax({
-            url: '/api/sales/',
+            url: '/api/v1/box/',
             method: 'GET',
             data: { search: valor },
             success: function (data) { 
                 if (data.length == 0) {
-                    $('#search_sale').val('')
+                    $('#search_box').val('')
                 } else {
                     showSales(productListDiv,data)
                 }

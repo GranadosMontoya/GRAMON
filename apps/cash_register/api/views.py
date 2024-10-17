@@ -1,13 +1,15 @@
+from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from ..models import Caja
-from .serializer import BoxSerializer
+from .serializer import BoxSerializer, BoxSerializer2
 from .paginated import MediumPagination
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.views import APIView
 
 class BoxApi(LoginRequiredMixin, ModelViewSet):
     serializer_class = BoxSerializer
@@ -32,3 +34,33 @@ class BoxApi(LoginRequiredMixin, ModelViewSet):
         caja.save()  # Guarda los cambios
 
         return Response(BoxSerializer(caja).data, status=status.HTTP_200_OK)
+
+    def get_queryset(self):
+        queryset = self.queryset
+        search = self.request.query_params.get('search', None)
+        
+        # Asegúrate de manejar tanto números como cadenas en el filtro
+        if search:
+            if search.isdigit():  # Si el valor es un número, buscar por id exacto
+                queryset = queryset.filter(id=search)
+            else:  # Si es texto, buscar por un campo relacionado
+                queryset = queryset.filter(id__icontains=search)
+        else:
+            queryset = Caja.objects.all()
+        
+        return queryset
+
+class SalesView(LoginRequiredMixin,APIView):
+    login_url = reverse_lazy('user_app:login')
+
+    def get(self, request):
+        box_id = request.GET.get('search')
+        
+        if box_id:  # Si se proporciona un valor de búsqueda
+            box = Caja.objects.filter(id__icontains=box_id)
+        else:  # Si no se proporciona un valor de búsqueda
+            box = Caja.objects.all().order_by('-id')  # Devuelve todas las cajas ordenadas por `id` descendente
+
+        serializer = BoxSerializer2(box, many=True)  # Usamos `many=True` ya que ahora puede devolver múltiples cajas
+        return Response(serializer.data)
+

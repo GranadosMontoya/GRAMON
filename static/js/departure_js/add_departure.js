@@ -15,10 +15,10 @@ function  AddDeparture(datos) {
             close_modal()
             $('#botom_search_departure').click();
           },
-          error: function (xhr, status, error) {
-            console.error('Error al registrar la salida', error);
-            console.log('Detalles del error:', xhr.responseText); // Esto mostrará el mensaje de error completo
-          },
+        error: function (xhr, status, error) {
+          console.error('Error al registrar la salida', error);
+          console.log('Detalles del error:', xhr.responseText); // Esto mostrará el mensaje de error completo
+        },
     });
 };
   
