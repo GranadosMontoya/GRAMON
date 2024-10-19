@@ -17,6 +17,11 @@ class Caja(models.Model):
     fecha_cierre = models.DateTimeField(null=True, blank=True)
     estado = models.CharField(max_length=10, choices=[('Abierta', 'Abierta'), ('Cerrada', 'Cerrada')], default='Abierta')
 
+    @staticmethod
+    def caja_abierta_existe():
+        """Verifica si ya existe una caja abierta"""
+        return Caja.objects.filter(estado='Abierta').exists()
+
     def actualizar_totales(self):
         """Actualiza el total de entradas y salidas de la caja"""
         self.total_entradas = self.transacciones.filter(tipo='entrada').aggregate(Sum('monto'))['monto__sum'] or 0

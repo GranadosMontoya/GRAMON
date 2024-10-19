@@ -63,8 +63,6 @@ $('.modal_close_box').click(function () {
         },
         success: function(caja){
             caja.results.forEach(function(cajaItem) {
-                identificador = cajaItem.id // Aquí se imprime el ID de cada caja
-            
                 $.ajax({
                     url: '/close/box/',
                     success: function (data) {
@@ -76,7 +74,7 @@ $('.modal_close_box').click(function () {
                             $('.addproduct_boton').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
                             event.preventDefault();
                             var formData = new FormData();
-                            formData.append('box_id', identificador);
+                            formData.append('box_id', cajaItem.id);
                             formData.append('saldo_final', $("#monto_real").val());
                             $.ajax({
                                 url: '/api/box/',
@@ -93,7 +91,10 @@ $('.modal_close_box').click(function () {
                                     const toast = new bootstrap.Toast(tostada)
                                     toast.show()
                                     close_modal()
-                                }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.log(error)
+                                },
                             });
                         });
                     });

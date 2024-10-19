@@ -19,7 +19,7 @@ class BoxApi(LoginRequiredMixin, ModelViewSet):
 
     def put(self, request, *args, **kwargs):
         box_id = request.data.get('box_id')  # Obtiene el ID de la caja desde los datos del formulario
-        
+        print(box_id)
         # Obtiene el objeto de la caja utilizando el ID proporcionado
         caja = get_object_or_404(Caja, id=box_id)
 
@@ -34,21 +34,6 @@ class BoxApi(LoginRequiredMixin, ModelViewSet):
         caja.save()  # Guarda los cambios
 
         return Response(BoxSerializer(caja).data, status=status.HTTP_200_OK)
-
-    def get_queryset(self):
-        queryset = self.queryset
-        search = self.request.query_params.get('search', None)
-        
-        # Asegúrate de manejar tanto números como cadenas en el filtro
-        if search:
-            if search.isdigit():  # Si el valor es un número, buscar por id exacto
-                queryset = queryset.filter(id=search)
-            else:  # Si es texto, buscar por un campo relacionado
-                queryset = queryset.filter(id__icontains=search)
-        else:
-            queryset = Caja.objects.all()
-        
-        return queryset
 
 class SalesView(LoginRequiredMixin,APIView):
     login_url = reverse_lazy('user_app:login')
