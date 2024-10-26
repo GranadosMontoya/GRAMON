@@ -81,7 +81,7 @@ class SalesApi(LoginRequiredMixin,ModelViewSet):
     
 @login_required(login_url='/')
 def new_sale(request):
-    caja_abierta = Caja.get_caja_abierta()  # Método que devuelve la caja abierta
+    caja_abierta = Caja.caja_abierta_existe()  # Método que devuelve la caja abierta
     if not caja_abierta:
         return render(request, "sales/Error_de_caja_sale.html")
     return render(request, 'sales/new_sale.html')
