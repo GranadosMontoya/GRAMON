@@ -21,6 +21,11 @@ class Caja(models.Model):
     def caja_abierta_existe():
         """Verifica si ya existe una caja abierta"""
         return Caja.objects.filter(estado='Abierta').exists()
+    
+    @staticmethod
+    def obtener_caja_abierta():
+        """Verifica si ya existe una caja abierta"""
+        return Caja.objects.filter(estado='Abierta').first()
 
     def actualizar_totales(self):
         """Actualiza el total de entradas y salidas de la caja"""
@@ -55,8 +60,8 @@ class Transaccion(models.Model):
     descripcion = models.TextField()
 
     def save(self, *args, **kwargs):
-        # Verificar si hay una caja abierta
-        caja_abierta = Caja.get_caja_abierta()
+        # Obtener la caja abierta
+        caja_abierta = Caja.obtener_caja_abierta()
         if not caja_abierta:
             raise ValidationError("No se pueden registrar transacciones sin una caja abierta.")
         # Asociar la transacción con la caja abierta
@@ -65,6 +70,7 @@ class Transaccion(models.Model):
         super(Transaccion, self).save(*args, **kwargs)
         # Actualizar totales de la caja
         self.caja.actualizar_totales()
+
 
     def __str__(self):
         return 'N° de transaccion: ' + str(self.id)

@@ -54,13 +54,12 @@ class SalesSerializer(serializers.ModelSerializer):
                 product_statistics.revenue += (full_value - (product.entry_price * quantity))
                 product_statistics.save()
 
-                # Registrar la transacción en la caja abierta
-                caja_abierta = Caja.caja_abierta_existe()  # Método que devuelve la caja abierta
-                if not caja_abierta:
-                    raise serializers.ValidationError("No se puede registrar una venta sin una caja abierta.")  # Lanza un error de validación
+            # Registrar la transacción en la caja abierta
+            caja_abierta = Caja.caja_abierta_existe()  # Método que devuelve la caja abierta
+            if not caja_abierta:
+                raise serializers.ValidationError("No se puede registrar una venta sin una caja abierta.")  # Lanza un error de validación
 
             Transaccion.objects.create(
-                caja=caja_abierta,
                 tipo='entrada',
                 monto=sale.valor_final,  # El monto total de la venta
                 descripcion=f"Venta realizada por {validated_data['user']}"
